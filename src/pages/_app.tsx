@@ -1,24 +1,20 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider
-} from "react-query";
+import { SessionProvider } from "next-auth/react";
+import { withTRPC } from "@trpc/next";
 import Navbar from "@/components/Navbar";
 import type { AppProps } from "next/app";
+import type { AppRouter } from "@/server/routers";
 import "@/styles/globals.css";
-
-// Create a client
-const queryClient = new QueryClient();
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <Navbar />
       <Component {...pageProps} />
-    </QueryClientProvider>
+    </>
   );
 }
 
-export default App;
+export default withTRPC<AppRouter>({
+  config: () => ({ url: "/api/trpc" }),
+  ssr: false
+})(App);

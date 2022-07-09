@@ -1,45 +1,32 @@
-interface IResponse {
-  kind: string;
-  data: {
-    after: string;
-    before: string;
-    children: any[];
+import type { RedditPost, RedditResponse } from "@/types";
+
+export const filterResponse = (
+  data: RedditResponse["data"],
+  onlySelf = false
+) => {
+  const responseData = {
+    after: data.after,
+    before: data.before,
+    count: data.children.length,
+    posts: data.children.map((post: RedditPost) => {
+      return {
+        title: post.data.title,
+        author: post.data.author,
+        subreddit: post.data.subreddit,
+        thumbnail: post.data.thumbnail,
+        permalink: post.data.permalink,
+        url: post.data.url,
+        is_video: post.data.is_video,
+        is_self: post.data.thumbnail === "self" ? true : false,
+        media: post.data.media,
+        url_overridden_by_dest: post.data.url_overridden_by_dest
+      };
+    })
   };
-}
 
-export const filterResponse = (res: IResponse) => {
-  return {
-    after: res.data.after,
-    before: res.data.before,
-    children: res.data.children
-  };
-};
+  if (onlySelf) {
+    responseData.posts = responseData.posts.filter((post) => post.is_self);
+  }
 
-export interface IRedditPost {
-  title: string;
-  subreddit: string;
-  thumbnail: string;
-  permalink: string;
-  url: string;
-  is_video: boolean;
-  media?: any;
-  url_overridden_by_dest: string;
-}
-
-export const filterChildren = (
-  data: IResponse["data"],
-  limit: number = 25
-): IRedditPost[] => {
-  return data?.children.slice(0, limit).map((post: { data: IRedditPost }) => {
-    return {
-      title: post.data.title,
-      subreddit: post.data.subreddit,
-      thumbnail: post.data.thumbnail,
-      permalink: post.data.permalink,
-      url: post.data.url,
-      is_video: post.data.is_video,
-      media: post.data.media,
-      url_overridden_by_dest: post.data.url_overridden_by_dest
-    };
-  });
+  return responseData;
 };

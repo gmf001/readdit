@@ -1,6 +1,6 @@
 const Navbar = () => {
   return (
-    <div className="h-16 max-w-screen-xl mx-auto flex items-center justify-between py-1.5 px-4">
+    <div className="h-16 sticky top-0 bg-black-500/90 backdrop-blur-xl max-w-screen-xl mx-auto flex items-center justify-between py-1.5 px-4">
       <div>
         <h2 className="font-bold text-lg">Reddify</h2>
       </div>

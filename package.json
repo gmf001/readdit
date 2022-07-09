@@ -10,13 +10,18 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@trpc/client": "^9.25.3",
+    "@trpc/next": "^9.25.3",
+    "@trpc/react": "^9.25.3",
+    "@trpc/server": "^9.25.3",
     "axios": "^0.27.2",
     "next": "12.2.1",
     "next-auth": "^4.9.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-query": "^4.0.0-beta.23",
-    "snoowrap": "^1.23.0"
+    "react-query": "^3.39.1",
+    "snoowrap": "^1.23.0",
+    "zod": "^3.17.3"
   },
   "devDependencies": {
     "@types/node": "18.0.3",
