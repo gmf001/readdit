@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply min-h-screen w-screen bg-black-500 flex flex-col font-sans text-gray-100 selection:bg-cyan-700 selection:text-white overflow-x-hidden;
+  }
+}
