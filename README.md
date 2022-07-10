@@ -6,4 +6,4 @@
 - Typescript
 - Tailwind
 - NextAuth
-- React Query
+- tRPC
