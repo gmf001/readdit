@@ -10,6 +10,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@tailwindcss/line-clamp": "^0.4.0",
     "@trpc/client": "^9.25.3",
     "@trpc/next": "^9.25.3",
     "@trpc/react": "^9.25.3",
@@ -21,6 +23,7 @@
     "react-dom": "18.2.0",
     "react-query": "^3.39.1",
     "snoowrap": "^1.23.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "zod": "^3.17.3"
   },
   "devDependencies": {
