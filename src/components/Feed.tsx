@@ -3,15 +3,17 @@ import { inferQueryResponse } from "@/api/trpc";
 
 interface Props {
   posts: inferQueryResponse<"reddit.front">["posts"];
+  selectPost: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const Feed = ({ posts }: Props) => {
+const Feed = ({ posts, selectPost }: Props) => {
   return (
     <div className="flex flex-col w-full space-y-4">
       {posts?.map((post, _id) => {
         const isImage = /(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url);
         return (
           <div
+            onClick={() => selectPost(post)}
             key={_id}
             className="group flex flex-col space-y-5 w-full bg-black-400 rounded-lg border border-black-200/50 p-5 hover:border-black-200"
           >
