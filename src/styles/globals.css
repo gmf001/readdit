@@ -11,6 +11,6 @@
   }
 
   body {
-    @apply min-h-screen w-screen bg-black-500 flex flex-col font-sans text-gray-100 selection:bg-cyan-700 selection:text-white overflow-x-hidden;
+    @apply flex flex-col w-screen min-h-screen overflow-x-hidden font-sans text-gray-100 bg-black-500 selection:bg-cyan-700 selection:text-white;
   }
 }
