@@ -1,9 +1,6 @@
-# Reddify - Reddit Client
+# Readdit - Reddit Client
 
 ## Built with
 
-- Next.js
-- Typescript
-- Tailwind
-- NextAuth
-- tRPC
+- T3 Stack
+- Reddit API
