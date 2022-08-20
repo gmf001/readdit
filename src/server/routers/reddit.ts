@@ -1,7 +1,7 @@
-import { redditClient } from "@/api/client";
-import { createRouter } from "@/server/createRouter";
-import { RedditResponse, RedditPost } from "@/types";
-import { z } from "zod";
+import { redditClient } from '@/api/client';
+import { createRouter } from '@/server/createRouter';
+import { RedditResponse, RedditPost } from '@/types/reddit';
+import { z } from 'zod';
 
 async function getPosts({ sort, limit }: { sort: string; limit: number }) {
   return await (
@@ -17,7 +17,7 @@ async function getSubreddit(subreddit: string) {
   ).data;
 }
 
-async function filterResponse(data: RedditResponse["data"], onlySelf = false) {
+async function filterResponse(data: RedditResponse['data'], onlySelf = false) {
   const responseData = {
     after: data.after,
     before: data.before,
@@ -27,12 +27,12 @@ async function filterResponse(data: RedditResponse["data"], onlySelf = false) {
         title: post.data.title,
         author: post.data.author,
         subreddit: post.data.subreddit,
-        subreddit_icon: "",
+        subreddit_icon: '',
         thumbnail: post.data.url,
         permalink: post.data.permalink,
         url: post.data.url,
         is_video: post.data.is_video,
-        is_self: post.data.thumbnail === "self" ? true : false,
+        is_self: post.data.thumbnail === 'self' ? true : false,
         media: post.data.media,
         url_overridden_by_dest: post.data.url_overridden_by_dest
       };
@@ -44,7 +44,7 @@ async function filterResponse(data: RedditResponse["data"], onlySelf = false) {
       const subName = post.subreddit;
       const { data: subbreddit } = await getSubreddit(subName);
       const fallbackIcon =
-        "https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png";
+        'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
       return { ...post, subreddit_icon: subbreddit.icon_img || fallbackIcon };
     })
   );
@@ -56,10 +56,10 @@ async function filterResponse(data: RedditResponse["data"], onlySelf = false) {
   return responseData;
 }
 
-export const redditRouter = createRouter().query("front", {
+export const redditRouter = createRouter().query('front', {
   input: z.object({
     limit: z.number().default(50),
-    sort: z.string().default("hot"),
+    sort: z.string().default('hot'),
     onlySelf: z.boolean().default(false)
   }),
   async resolve({ input }) {

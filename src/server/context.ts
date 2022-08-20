@@ -1,5 +1,5 @@
-import * as trpc from "@trpc/server";
-import * as trpcNext from "@trpc/server/adapters/next";
+import * as trpc from '@trpc/server';
+import * as trpcNext from '@trpc/server/adapters/next';
 
 type ContextOptions = trpcNext.CreateNextContextOptions;
 
