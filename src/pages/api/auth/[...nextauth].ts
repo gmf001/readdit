@@ -3,9 +3,15 @@ import RedditProvider from 'next-auth/providers/reddit';
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id;
       }
       return session;
     }
@@ -13,7 +19,20 @@ export const authOptions: NextAuthOptions = {
   providers: [
     RedditProvider({
       clientId: process.env.REDDIT_CLIENT_ID,
-      clientSecret: process.env.REDDIT_CLIENT_SECRET
+      clientSecret: process.env.REDDIT_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.name,
+          email: null,
+          image: profile.snoovatar_img
+        };
+      },
+      authorization: {
+        params: {
+          duration: 'permanent'
+        }
+      }
     })
   ]
 };

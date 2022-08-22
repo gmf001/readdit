@@ -19,5 +19,7 @@ export type RedditPost = {
     is_self: boolean;
     media?: any;
     url_overridden_by_dest: string;
+    num_comments: number;
+    ups: number;
   };
 };

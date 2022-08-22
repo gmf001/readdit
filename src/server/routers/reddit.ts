@@ -23,6 +23,9 @@ async function filterResponse(data: RedditResponse['data'], onlySelf = false) {
     before: data.before,
     count: data.children.length,
     posts: data.children.map((post: RedditPost, i) => {
+      // if (i == 0) {
+      //   console.log('post', post);
+      // }
       return {
         title: post.data.title,
         author: post.data.author,
@@ -34,7 +37,9 @@ async function filterResponse(data: RedditResponse['data'], onlySelf = false) {
         is_video: post.data.is_video,
         is_self: post.data.thumbnail === 'self' ? true : false,
         media: post.data.media,
-        url_overridden_by_dest: post.data.url_overridden_by_dest
+        url_overridden_by_dest: post.data.url_overridden_by_dest,
+        num_comments: post.data.num_comments,
+        upvotes: post.data.ups
       };
     })
   };
