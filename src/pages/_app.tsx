@@ -13,7 +13,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>Readdit - Reddit Client</title>
       </Head>
       <Navbar />
-      <main className='w-full px-4 mx-auto lg:px-0 max-w-screen-2xl'>
+      <main className='max-w-screen-xl px-4 mx-auto'>
         <Component {...pageProps} />
       </main>
     </SessionProvider>

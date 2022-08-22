@@ -5,7 +5,7 @@ function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <div className='sticky top-0 z-10 flex items-center justify-between w-full px-4 py-5 mx-auto min-h-16 bg-black-500/95 backdrop-blur-xl lg:px-0 max-w-screen-2xl'>
+    <div className='sticky top-0 z-10 flex items-center justify-between w-full max-w-screen-xl px-4 py-5 mx-auto min-h-16 bg-black-500/95 backdrop-blur-xl'>
       <div>
         <h2 className='text-3xl font-extrabold text-orange-300 uppercase'>
           Readdit

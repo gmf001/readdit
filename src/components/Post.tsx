@@ -8,7 +8,7 @@ import {
 
 type RedditResponse = inferQueryOutput<'reddit.front'>;
 
-const Post = (post: RedditResponse['posts'][0]) => {
+const Post = (post: RedditResponse['children'][0]['data']) => {
   return (
     <a
       href={`https://reddit.com/${post.permalink}`}
@@ -28,7 +28,7 @@ const Post = (post: RedditResponse['posts'][0]) => {
               />
             )}
           </div>
-          <span className='text-sm text-gray-500'>
+          <span className='text-xs font-semibold text-gray-500'>
             ({post.is_self ? 'self.' : 'r/'}
             {post.subreddit})
           </span>
@@ -56,14 +56,14 @@ const Post = (post: RedditResponse['posts'][0]) => {
 
       <div className='grid grid-cols-3 px-2 pt-4 gap-x-8'>
         <div className='flex items-center space-x-2 group'>
-          <ChevronDoubleUpIcon className='w-6 h-6 text-gray-400 group-hover:text-gray-200' />
-          <span className='text-sm font-semibold text-gray-400 group-hover:text-gray-200'>
-            {post.upvotes}
+          <ChevronDoubleUpIcon className='w-5 h-5 text-gray-400 group-hover:text-gray-200' />
+          <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
+            {post.ups}
           </span>
         </div>
         <div className='flex items-center space-x-2 group'>
-          <AnnotationIcon className='w-6 h-6 text-gray-400 group-hover:text-gray-200' />
-          <span className='text-sm font-semibold text-gray-400 group-hover:text-gray-200'>
+          <AnnotationIcon className='w-5 h-5 text-gray-400 group-hover:text-gray-200' />
+          <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
             {post.num_comments}
           </span>
         </div>

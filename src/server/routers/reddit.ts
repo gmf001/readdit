@@ -1,12 +1,40 @@
 import { redditClient } from '@/api/client';
 import { createRouter } from '@/server/createRouter';
-import { RedditResponse, RedditPost } from '@/types/reddit';
 import { z } from 'zod';
 
-async function getPosts({ sort, limit }: { sort: string; limit: number }) {
-  return await (
-    await redditClient.get<RedditResponse>(`/${sort}/.json?limit=${limit}`)
-  ).data;
+const BASE_URL = 'https://reddit.com';
+
+const redditPost = z.object({
+  data: z.object({
+    author: z.string(),
+    title: z.string(),
+    subreddit: z.string(),
+    thumbnail: z.string(),
+    permalink: z.string(),
+    url: z.string(),
+    is_video: z.boolean(),
+    is_self: z.boolean(),
+    num_comments: z.number(),
+    ups: z.number(),
+    subreddit_icon: z.string().optional()
+  })
+});
+
+const redditValidator = z.object({
+  kind: z.string(),
+  data: z.object({
+    after: z.string(),
+    before: z.string().or(z.null()),
+    children: z.array(redditPost)
+  })
+});
+
+async function getPosts(sort: string, limit: number) {
+  const res = await (
+    await fetch(BASE_URL + `/${sort}/.json?limit=${limit}`)
+  ).json();
+
+  return redditValidator.parse(res);
 }
 
 async function getSubreddit(subreddit: string) {
@@ -17,58 +45,25 @@ async function getSubreddit(subreddit: string) {
   ).data;
 }
 
-async function filterResponse(data: RedditResponse['data'], onlySelf = false) {
-  const responseData = {
-    after: data.after,
-    before: data.before,
-    count: data.children.length,
-    posts: data.children.map((post: RedditPost, i) => {
-      // if (i == 0) {
-      //   console.log('post', post);
-      // }
-      return {
-        title: post.data.title,
-        author: post.data.author,
-        subreddit: post.data.subreddit,
-        subreddit_icon: '',
-        thumbnail: post.data.url,
-        permalink: post.data.permalink,
-        url: post.data.url,
-        is_video: post.data.is_video,
-        is_self: post.data.thumbnail === 'self' ? true : false,
-        media: post.data.media,
-        url_overridden_by_dest: post.data.url_overridden_by_dest,
-        num_comments: post.data.num_comments,
-        upvotes: post.data.ups
-      };
-    })
-  };
-
-  responseData.posts = await Promise.all(
-    responseData.posts.map(async (post) => {
-      const subName = post.subreddit;
-      const { data: subbreddit } = await getSubreddit(subName);
-      const fallbackIcon =
-        'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
-      return { ...post, subreddit_icon: subbreddit.icon_img || fallbackIcon };
-    })
-  );
-
-  if (onlySelf) {
-    responseData.posts = responseData.posts.filter((post) => post.is_self);
-  }
-
-  return responseData;
-}
-
 export const redditRouter = createRouter().query('front', {
-  input: z.object({
-    limit: z.number().default(50),
-    sort: z.string().default('hot'),
-    onlySelf: z.boolean().default(false)
-  }),
+  input: z
+    .object({
+      limit: z.number(),
+      sort: z.string()
+    })
+    .default({ limit: 50, sort: 'hot' }),
   async resolve({ input }) {
-    const { data: posts } = await getPosts({ ...input });
-    return await filterResponse(posts, input.onlySelf);
+    const { data: posts } = await getPosts(input.sort, input.limit);
+    posts.children = await Promise.all(
+      posts.children.map(async (post) => {
+        const subName = post.data.subreddit;
+        const { data: subbreddit } = await getSubreddit(subName);
+        const fallbackIcon =
+          'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
+        post.data.subreddit_icon = subbreddit.icon_img || fallbackIcon;
+        return post;
+      })
+    );
+    return posts;
   }
 });
