@@ -6,29 +6,27 @@ import {
 
 function PostSkeleton() {
   return (
-    <div className='flex flex-col p-4 space-y-1 border rounded-lg h-[400px] justify-between bg-black-400 border-black-300 hover:border-black-200 hover:cursor-pointer'>
-      <div className='flex flex-col flex-1 mb-4 space-y-3'>
+    <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-black-300 bg-black-400 p-4 hover:cursor-pointer hover:border-black-200'>
+      <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center justify-between space-x-3 truncate'>
-          <div className='relative w-10 h-10 overflow-hidden rounded-full animate-pulse bg-black-200'></div>
+          <div className='relative h-10 w-10 animate-pulse overflow-hidden rounded-full bg-black-200'></div>
           <span className='text-sm text-gray-500'></span>
         </div>
 
-        <h2 className='w-full h-6 text-xl font-bold text-white animate-pulse line-clamp-2 bg-black-200 rounded-xl'></h2>
-        <p className='text-xs font-semibold text-gray-400'>
-          Yesterday - 2m Read Time
-        </p>
+        <h2 className='h-6 w-full animate-pulse rounded-xl bg-black-200 text-xl font-bold text-white line-clamp-2'></h2>
+        <p className='text-xs font-semibold text-gray-400'></p>
       </div>
 
-      <div className='relative w-full h-[155px] bg-black-200 animate-pulse overflow-hidden rounded-xl'></div>
+      <div className='relative h-[155px] w-full animate-pulse overflow-hidden rounded-xl bg-black-200'></div>
 
-      <div className='grid grid-cols-3 px-2 pt-4 gap-x-8'>
-        <div className='flex items-center space-x-2 group'>
-          <ChevronDoubleUpIcon className='w-6 h-6 text-gray-400' />
-          <div className='w-full h-4 text-sm font-semibold text-gray-400 rounded animate-pulse bg-black-200 group-hover:text-gray-200'></div>
+      <div className='grid grid-cols-3 gap-x-8 px-2 pt-4'>
+        <div className='group flex items-center space-x-2'>
+          <ChevronDoubleUpIcon className='h-6 w-6 text-gray-400' />
+          <div className='h-4 w-full animate-pulse rounded bg-black-200 text-sm font-semibold text-gray-400 group-hover:text-gray-200'></div>
         </div>
-        <div className='flex items-center space-x-2 group'>
-          <AnnotationIcon className='w-6 h-6 text-gray-400' />
-          <div className='w-full h-4 text-sm font-semibold text-gray-400 rounded animate-pulse bg-black-200 group-hover:text-gray-200'></div>
+        <div className='group flex items-center space-x-2'>
+          <AnnotationIcon className='h-6 w-6 text-gray-400' />
+          <div className='h-4 w-full animate-pulse rounded bg-black-200 text-sm font-semibold text-gray-400 group-hover:text-gray-200'></div>
         </div>
       </div>
     </div>

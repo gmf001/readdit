@@ -1,24 +1,24 @@
 import Image from 'next/image';
 import { inferQueryOutput } from '@/utils/trpc';
-import {
-  ChevronDoubleUpIcon,
-  AnnotationIcon,
-  ExternalLinkIcon
-} from '@heroicons/react/solid';
+import { format, fromUnixTime } from 'date-fns';
+import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
 
 type RedditResponse = inferQueryOutput<'reddit.front'>;
 
 const Post = (post: RedditResponse['children'][0]['data']) => {
+  const date = fromUnixTime(post.created);
+  const formattedDate = format(date, 'd, MMM');
+
   return (
     <a
       href={`https://reddit.com/${post.permalink}`}
       target='_blank'
-      className='flex flex-col p-4 space-y-1 border rounded-lg h-[400px] justify-between bg-black-400 border-black-300 hover:border-black-200 hover:cursor-pointer'
+      className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-black-300 bg-black-400 p-4 hover:cursor-pointer hover:border-black-200'
       rel='noreferrer'
     >
-      <div className='flex flex-col flex-1 mb-4 space-y-3'>
+      <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
-          <div className='relative w-10 h-10 overflow-hidden rounded-full bg-black-100'>
+          <div className='relative h-10 w-10 overflow-hidden rounded-full bg-black-100'>
             {post.subreddit_icon && (
               <Image
                 src={post.subreddit_icon}
@@ -38,11 +38,11 @@ const Post = (post: RedditResponse['children'][0]['data']) => {
           {post.title}
         </h2>
         <p className='text-xs font-semibold text-gray-400'>
-          Yesterday - 2m Read Time
+          Posted: {formattedDate}
         </p>
       </div>
 
-      <div className='relative w-full h-[155px] overflow-hidden rounded-xl'>
+      <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
         {/(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url) && (
           <Image
             src={post.url}
@@ -54,15 +54,15 @@ const Post = (post: RedditResponse['children'][0]['data']) => {
         )}
       </div>
 
-      <div className='grid grid-cols-3 px-2 pt-4 gap-x-8'>
-        <div className='flex items-center space-x-2 group'>
-          <ChevronDoubleUpIcon className='w-5 h-5 text-gray-400 group-hover:text-gray-200' />
+      <div className='grid grid-cols-3 gap-x-8 px-2 pt-4'>
+        <div className='group flex items-center space-x-2'>
+          <ChevronDoubleUpIcon className='h-5 w-5 text-gray-400 group-hover:text-gray-200' />
           <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
             {post.ups}
           </span>
         </div>
-        <div className='flex items-center space-x-2 group'>
-          <AnnotationIcon className='w-5 h-5 text-gray-400 group-hover:text-gray-200' />
+        <div className='group flex items-center space-x-2'>
+          <AnnotationIcon className='h-5 w-5 text-gray-400 group-hover:text-gray-200' />
           <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
             {post.num_comments}
           </span>

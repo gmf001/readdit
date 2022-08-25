@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +10,6 @@
   }
 
   body {
-    @apply flex flex-col w-screen min-h-screen overflow-x-hidden font-sans text-gray-100 bg-black-500 selection:bg-cyan-700 selection:text-white;
+    @apply flex min-h-screen w-screen flex-col overflow-x-hidden bg-black-500 font-sans text-gray-100 selection:bg-cyan-700 selection:text-white;
   }
 }

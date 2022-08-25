@@ -1,5 +1,6 @@
 import { withTRPC } from '@trpc/next';
 import { SessionProvider } from 'next-auth/react';
+import superjson from 'superjson';
 import Navbar from '@/components/Navbar';
 import type { AppProps } from 'next/app';
 import type { AppRouter } from '@/server/routers';
@@ -13,7 +14,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>Readdit - Reddit Client</title>
       </Head>
       <Navbar />
-      <main className='max-w-screen-xl px-4 mx-auto'>
+      <main className='mx-auto px-4 md:max-w-screen-xl xl:max-w-screen-2xl'>
         <Component {...pageProps} />
       </main>
     </SessionProvider>
@@ -21,6 +22,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 }
 
 export default withTRPC<AppRouter>({
-  config: () => ({ url: '/api/trpc' }),
+  config: () => ({
+    transformer: superjson,
+    url: '/api/trpc'
+  }),
   ssr: false
 })(App);

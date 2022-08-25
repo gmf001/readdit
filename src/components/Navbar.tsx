@@ -5,9 +5,9 @@ function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <div className='sticky top-0 z-10 flex items-center justify-between w-full max-w-screen-xl px-4 py-5 mx-auto min-h-16 bg-black-500/95 backdrop-blur-xl'>
+    <div className='min-h-16 sticky top-0 z-10 mx-auto flex w-full items-center justify-between bg-black-500/95 px-4 py-5 backdrop-blur-xl md:max-w-screen-xl xl:max-w-screen-2xl'>
       <div>
-        <h2 className='text-3xl font-extrabold text-orange-300 uppercase'>
+        <h2 className='text-3xl font-extrabold uppercase text-orange-400'>
           Readdit
         </h2>
       </div>
@@ -16,7 +16,7 @@ function Navbar() {
         {!session ? (
           <button
             onClick={() => signIn('reddit')}
-            className='px-6 py-2.5 bg-orange-500 rounded font-semibold text-sm hover:bg-orange-600 transition-colors duration-150 ease-linear'
+            className='rounded bg-orange-500 px-6 py-2.5 text-sm font-bold uppercase transition-colors duration-150 ease-linear hover:bg-orange-600'
           >
             Sign In
           </button>
@@ -25,7 +25,7 @@ function Navbar() {
             {session.user?.image && (
               <div
                 onClick={() => signOut()}
-                className='relative w-12 h-12 overflow-hidden border rounded-full cursor-pointer border-black-300 hover:border-black-200'
+                className='relative h-12 w-12 cursor-pointer overflow-hidden rounded-full border border-black-300 hover:border-black-200'
               >
                 <Image
                   src={session.user?.image}
