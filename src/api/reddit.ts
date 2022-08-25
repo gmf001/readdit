@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const BASE_URL = 'https://reddit.com';
 
-const redditPost = z.object({
+export const redditPost = z.object({
   data: z.object({
     id: z.string(),
     author: z.string(),

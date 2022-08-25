@@ -3,9 +3,10 @@ import { inferQueryOutput } from '@/utils/trpc';
 import { format, fromUnixTime } from 'date-fns';
 import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
 
-type RedditResponse = inferQueryOutput<'reddit.front'>;
+type RedditResponse =
+  inferQueryOutput<'reddit.infinitePosts'>['posts'][0]['data'];
 
-const Post = (post: RedditResponse['children'][0]['data']) => {
+const Post = (post: RedditResponse) => {
   const date = fromUnixTime(post.created);
   const formattedDate = format(date, 'd, MMM');
 
