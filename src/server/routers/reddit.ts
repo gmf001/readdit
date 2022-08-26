@@ -10,7 +10,6 @@ export const redditRouter = createRouter().query('infinitePosts', {
   }),
   async resolve({ input }) {
     const { sort, limit, cursor } = input;
-    console.log('cursor', cursor);
     const posts = await getPosts(sort, limit, cursor);
 
     posts.children = await Promise.all(
@@ -25,7 +24,7 @@ export const redditRouter = createRouter().query('infinitePosts', {
     );
 
     let nextCursor: typeof cursor | undefined = undefined;
-    console.log('length', posts.children.length, limit);
+
     if (posts.children.length >= limit) {
       const nextItem = posts.children.pop();
       nextCursor = nextItem!.data.id;

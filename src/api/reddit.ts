@@ -21,7 +21,7 @@ export const redditPost = z.object({
   })
 });
 
-async function getPosts(
+export async function getPosts(
   sort: string,
   limit: number,
   after: string | null | undefined
@@ -34,16 +34,14 @@ async function getPosts(
       children: z.array(redditPost)
     })
   });
-  console.log('after', after);
-  const url = BASE_URL + `/${sort}/.json?limit=${limit}&after=t3_${after}`;
-  console.log('fetchurl', url);
 
+  const url = BASE_URL + `/${sort}/.json?limit=${limit}&after=t3_${after}`;
   const res = await (await fetch(url)).json();
 
   return postValidator.parse(res).data;
 }
 
-async function getSubreddit(subreddit: string) {
+export async function getSubreddit(subreddit: string) {
   const subredditValidator = z.object({
     kind: z.string(),
     data: z.object({
@@ -57,5 +55,3 @@ async function getSubreddit(subreddit: string) {
 
   return subredditValidator.parse(res).data;
 }
-
-export { getPosts, getSubreddit };

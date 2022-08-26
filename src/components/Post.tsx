@@ -14,12 +14,12 @@ const Post = (post: RedditResponse) => {
     <a
       href={`https://reddit.com/${post.permalink}`}
       target='_blank'
-      className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-black-300 bg-black-400 p-4 hover:cursor-pointer hover:border-black-200'
+      className='group flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 hover:cursor-pointer hover:border-dark-200'
       rel='noreferrer'
     >
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
-          <div className='relative h-10 w-10 overflow-hidden rounded-full bg-black-100'>
+          <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
             {post.subreddit_icon && (
               <Image
                 src={post.subreddit_icon}
@@ -35,7 +35,7 @@ const Post = (post: RedditResponse) => {
           </span>
         </div>
 
-        <h2 className='text-xl font-bold text-white line-clamp-2'>
+        <h2 className='text-xl font-bold text-white transition-colors duration-200 ease-in line-clamp-2 group-hover:text-primary-500'>
           {post.title}
         </h2>
         <p className='text-xs font-semibold text-gray-400'>
