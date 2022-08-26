@@ -3,17 +3,27 @@ import RedditProvider from 'next-auth/providers/reddit';
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
       }
-      return token;
+
+      if (account) {
+        token.refreshToken = account.refresh_token;
+      }
+
+      return Promise.resolve(token);
     },
     session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id;
       }
-      return session;
+
+      if (typeof token.refreshToken === 'string') {
+        session.refreshToken = token.refreshToken;
+      }
+
+      return Promise.resolve(session);
     }
   },
   providers: [
@@ -24,12 +34,12 @@ export const authOptions: NextAuthOptions = {
         return {
           id: profile.id,
           name: profile.name,
-          email: null,
           image: profile.snoovatar_img
         };
       },
       authorization: {
         params: {
+          scope: 'identity mysubreddits read',
           duration: 'permanent'
         }
       }

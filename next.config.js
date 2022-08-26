@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: { images: { allowFutureImage: true } },
   images: {
     domains: [
       'www.reddit.com',
@@ -14,7 +13,8 @@ const nextConfig = {
       'res.cloudinary.com',
       'b.thumbs.redditmedia.com',
       'a.thumbs.redditmedia.com',
-      'user-images.githubusercontent.com'
+      'user-images.githubusercontent.com',
+      'imgur.com'
     ]
   }
 };

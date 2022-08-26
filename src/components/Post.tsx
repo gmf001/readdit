@@ -1,12 +1,9 @@
 import Image from 'next/image';
-import { inferQueryOutput } from '@/utils/trpc';
 import { format, fromUnixTime } from 'date-fns';
 import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
+import type { Submission } from 'snoowrap';
 
-type RedditResponse =
-  inferQueryOutput<'reddit.infinitePosts'>['posts'][0]['data'];
-
-const Post = (post: RedditResponse) => {
+const Post = ({ post }: { post: Submission }) => {
   const date = fromUnixTime(post.created);
   const formattedDate = format(date, 'd, MMM');
 
@@ -20,19 +17,18 @@ const Post = (post: RedditResponse) => {
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
           <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
-            {post.subreddit_icon && (
+            {post.subreddit.icon_img && (
               <Image
-                src={post.subreddit_icon}
-                alt=''
+                src={post.subreddit.icon_img}
+                alt={post.subreddit.title}
                 layout='fill'
                 objectFit='cover'
               />
             )}
           </div>
-          <span className='text-xs font-semibold text-gray-500'>
-            ({post.is_self ? 'self.' : 'r/'}
-            {post.subreddit})
-          </span>
+          <div className='text-xs font-semibold text-gray-500'>
+            ({post?.subreddit_name_prefixed})
+          </div>
         </div>
 
         <h2 className='text-xl font-bold text-white transition-colors duration-200 ease-in line-clamp-2 group-hover:text-primary-500'>
@@ -40,6 +36,10 @@ const Post = (post: RedditResponse) => {
         </h2>
         <p className='text-xs font-semibold text-gray-400'>
           Posted: {formattedDate}
+        </p>
+        <p>
+          isVideo: {post.is_video ? 'true' : 'false'}, isSelf:{' '}
+          {post.is_self ? 'true' : 'false'},
         </p>
       </div>
 
@@ -68,13 +68,6 @@ const Post = (post: RedditResponse) => {
             {post.num_comments}
           </span>
         </div>
-
-        {/* <div className='flex items-center justify-end space-x-2 group'>
-          <ExternalLinkIcon className='w-6 h-6 text-gray-400 group-hover:text-gray-200' />
-          <span className='text-sm font-semibold text-gray-400 group-hover:text-gray-200'>
-            Read
-          </span>
-        </div> */}
       </div>
     </a>
   );
