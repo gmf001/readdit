@@ -1,25 +1,21 @@
-import { SORT_BY } from '@/api/reddit';
+import { SORTS } from '@/api/reddit';
 import { trpc } from '@/utils/trpc';
 
 type Props = {
-  query: SORT_BY;
-  setQuery: (q: SORT_BY) => void;
+  query: SORTS;
+  setQuery: (q: SORTS) => void;
+  subreddit: string | undefined;
+  setSubreddit: (s: string) => void;
 };
 
-function Tags({ query, setQuery }: Props) {
-  const { data, isLoading } = trpc.useQuery(['reddit.mySubreddits']);
-
-  console.log('tags', data);
-
-  const updateQuery = async (q: SORT_BY) => {
-    setQuery(q);
-  };
+function Tags({ query, setQuery, setSubreddit, subreddit }: Props) {
+  const { data } = trpc.useQuery(['reddit.mySubreddits']);
 
   return (
     <div className='flex items-center space-x-5 divide-x divide-dark-400 py-8'>
       <div className='flex items-center space-x-4'>
         <div
-          onClick={() => updateQuery('best')}
+          onClick={() => setQuery('best')}
           className={`flex cursor-pointer items-center justify-center rounded-xl bg-dark-400 p-3 px-5 text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
             query === 'best' && 'bg-primary-300/10 text-primary-400'
           }`}
@@ -27,7 +23,7 @@ function Tags({ query, setQuery }: Props) {
           Best
         </div>
         <div
-          onClick={() => updateQuery('hot')}
+          onClick={() => setQuery('hot')}
           className={`flex cursor-pointer items-center justify-center rounded-xl bg-dark-400 p-3 px-5 text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
             query === 'hot' && 'bg-primary-300/10 text-primary-400'
           }`}
@@ -35,7 +31,7 @@ function Tags({ query, setQuery }: Props) {
           Hot
         </div>
         <div
-          onClick={() => updateQuery('new')}
+          onClick={() => setQuery('new')}
           className={`flex cursor-pointer items-center justify-center rounded-xl bg-dark-400 p-3 px-5 text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
             query === 'new' && 'bg-primary-300/10 text-primary-400'
           }`}
@@ -43,7 +39,7 @@ function Tags({ query, setQuery }: Props) {
           New
         </div>
         <div
-          onClick={() => updateQuery('top')}
+          onClick={() => setQuery('top')}
           className={`flex cursor-pointer items-center justify-center rounded-xl bg-dark-400 p-3 px-5 text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
             query === 'top' && 'bg-primary-300/10 text-primary-400'
           }`}
@@ -53,15 +49,16 @@ function Tags({ query, setQuery }: Props) {
       </div>
 
       <div className='flex items-center space-x-4 pl-6'>
-        {data?.map((subreddit) => (
+        {data?.map((s) => (
           <div
-            key={subreddit.id}
-            onClick={() => updateQuery('best')}
+            key={s.id}
+            onClick={() => setSubreddit(s.display_name_prefixed)}
             className={`flex cursor-pointer items-center justify-center truncate rounded-xl bg-dark-400 p-3 px-5 text-center text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
-              query === 'best' && 'bg-primary-300/10 text-primary-400'
+              subreddit === s.display_name_prefixed &&
+              'bg-primary-300/10 text-primary-400'
             }`}
           >
-            {subreddit.display_name}
+            {s.display_name_prefixed}
           </div>
         ))}
       </div>

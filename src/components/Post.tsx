@@ -1,15 +1,15 @@
 import Image from 'next/image';
 import { format, fromUnixTime } from 'date-fns';
 import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
-import type { Submission } from 'snoowrap';
+import { POST } from '@/api/reddit';
 
-const Post = ({ post }: { post: Submission }) => {
+const Post = (post: POST) => {
   const date = fromUnixTime(post.created);
   const formattedDate = format(date, 'd, MMM');
 
   return (
     <a
-      href={`https://reddit.com/${post.permalink}`}
+      href={`https://reddit.com${post.permalink}`}
       target='_blank'
       className='group flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 hover:cursor-pointer hover:border-dark-200'
       rel='noreferrer'
@@ -17,17 +17,16 @@ const Post = ({ post }: { post: Submission }) => {
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
           <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
-            {post.subreddit.icon_img && (
-              <Image
-                src={post.subreddit.icon_img}
-                alt={post.subreddit.title}
-                layout='fill'
-                objectFit='cover'
+            {post.subreddit_data.icon && (
+              <img
+                src={post.subreddit_data.icon}
+                alt={post.subreddit_data.title}
+                className='h-full w-full object-cover'
               />
             )}
           </div>
           <div className='text-xs font-semibold text-gray-500'>
-            ({post?.subreddit_name_prefixed})
+            (r/{post?.subreddit})
           </div>
         </div>
 
@@ -37,20 +36,14 @@ const Post = ({ post }: { post: Submission }) => {
         <p className='text-xs font-semibold text-gray-400'>
           Posted: {formattedDate}
         </p>
-        <p>
-          isVideo: {post.is_video ? 'true' : 'false'}, isSelf:{' '}
-          {post.is_self ? 'true' : 'false'},
-        </p>
       </div>
 
       <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
         {/(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url) && (
-          <Image
+          <img
             src={post.url}
-            alt=''
-            layout='fill'
-            objectFit='cover'
-            objectPosition='center'
+            alt={post.title}
+            className='h-full w-full object-cover object-center'
           />
         )}
       </div>

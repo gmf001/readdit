@@ -24,7 +24,14 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 export default withTRPC<AppRouter>({
   config: () => ({
     transformer: superjson,
-    url: '/api/trpc'
+    url: '/api/trpc',
+    queryClientConfig: {
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false
+        }
+      }
+    }
   }),
   ssr: false
 })(App);

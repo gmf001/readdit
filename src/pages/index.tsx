@@ -5,10 +5,12 @@ import { trpc } from '@/api/trpc';
 import Post from '@/components/Post';
 import PostSkeleton from '@/components/PostSkeleton';
 import Tags from '@/components/Tags';
-import { SORT_BY } from '@/api/reddit';
+import type { SORTS } from '@/api/reddit';
 
 function Home() {
-  const [query, setQuery] = useState<SORT_BY>('best');
+  const [query, setQuery] = useState<SORTS>('best');
+  const [subreddit, setSubreddit] = useState<string | undefined>();
+
   const { ref, inView } = useInView();
   const parent = useRef(null);
 
@@ -19,20 +21,19 @@ function Home() {
     isFetchingNextPage,
     refetch,
     isRefetching
-  } = trpc.useInfiniteQuery(
-    ['reddit.infinitePosts', { limit: 50, sort: query }],
-    {
-      getNextPageParam: (lastPage) => lastPage?.nextCursor
-    }
-  );
+  } = trpc.useInfiniteQuery(['reddit.myPosts', { sort: query, subreddit }], {
+    getNextPageParam: (lastPage) => lastPage?.nextCursor
+  });
 
   useEffect(() => {
     refetch();
-  }, [query, refetch]);
+  }, [query, subreddit, refetch]);
 
   useEffect(() => {
     if (inView) {
-      fetchNextPage();
+      setTimeout(() => {
+        fetchNextPage();
+      }, 2000);
     }
   }, [inView, fetchNextPage]);
 
@@ -46,12 +47,17 @@ function Home() {
       .map((_, id) => <PostSkeleton key={id} />);
   };
 
-  if (isLoading || isRefetching) {
+  if (isLoading) {
     return (
       <>
-        <Tags query={query} setQuery={setQuery} />
+        <Tags
+          query={query}
+          setQuery={setQuery}
+          subreddit={subreddit}
+          setSubreddit={setSubreddit}
+        />
         <div className='my-8 grid grid-cols-4 gap-x-8 gap-y-10'>
-          {skeletonPosts(50)}
+          {skeletonPosts(20)}
         </div>
       </>
     );
@@ -61,15 +67,21 @@ function Home() {
 
   return (
     <>
-      <Tags query={query} setQuery={setQuery} />
+      <Tags
+        query={query}
+        setQuery={setQuery}
+        subreddit={subreddit}
+        setSubreddit={setSubreddit}
+      />
       <div
         ref={parent}
         className='my-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
       >
         {data?.pages.map((page) =>
-          page?.posts.map((post, key) => <Post key={key} post={post} />)
+          page?.posts.map((post, key) => <Post key={key} {...post} />)
         )}
         {isFetchingNextPage && skeletonPosts(25)}
+        {isRefetching && skeletonPosts(25)}
         <span ref={ref}></span>
       </div>
     </>
