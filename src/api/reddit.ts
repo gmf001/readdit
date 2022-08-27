@@ -1,5 +1,4 @@
 import { Snoo } from '@/utils/snoo';
-// import { Submission, Listing } from 'snoowrap';
 import { z } from 'zod';
 
 export type SORTS = z.infer<typeof sorts>;
@@ -60,7 +59,9 @@ export async function getPosts(
   posts.children = await Promise.all(
     posts.children.map(async (post) => {
       const { icon_img, title } = await getSubreddit(post.subreddit);
-      post.subreddit_data.icon = icon_img;
+      post.subreddit_data.icon =
+        icon_img ||
+        'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
       post.subreddit_data.title = title;
       return post;
     })
@@ -73,7 +74,7 @@ export async function getSubreddit(name: string) {
   const subredditValidator = z
     .object({
       data: z.object({
-        icon_img: z.string(),
+        icon_img: z.string().nullish(),
         title: z.string()
       })
     })
@@ -88,5 +89,5 @@ export async function getSubreddit(name: string) {
 
 // authentication required
 export async function getSubscriptions(token: string) {
-  return await (await Snoo(token)).getDefaultSubreddits({ limit: 20 });
+  return await (await Snoo(token)).getDefaultSubreddits({ limit: 40 });
 }

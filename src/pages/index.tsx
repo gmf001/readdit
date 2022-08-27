@@ -33,7 +33,7 @@ function Home() {
     if (inView) {
       setTimeout(() => {
         fetchNextPage();
-      }, 2000);
+      }, 500);
     }
   }, [inView, fetchNextPage]);
 

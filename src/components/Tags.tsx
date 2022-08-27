@@ -1,5 +1,7 @@
 import { SORTS } from '@/api/reddit';
 import { trpc } from '@/utils/trpc';
+import { ChevronRightIcon } from '@heroicons/react/solid';
+import { useState } from 'react';
 
 type Props = {
   query: SORTS;
@@ -9,7 +11,9 @@ type Props = {
 };
 
 function Tags({ query, setQuery, setSubreddit, subreddit }: Props) {
+  const [translateXValue, setTranslateXValue] = useState(0);
   const { data } = trpc.useQuery(['reddit.mySubreddits']);
+  const translateStyles = { transform: `translateX(${translateXValue}px)` };
 
   return (
     <div className='flex items-center space-x-5 divide-x divide-dark-400 py-8'>
@@ -48,19 +52,34 @@ function Tags({ query, setQuery, setSubreddit, subreddit }: Props) {
         </div>
       </div>
 
-      <div className='flex items-center space-x-4 pl-6'>
-        {data?.map((s) => (
+      <div className='relative overflow-x-hidden pl-6'>
+        <div className='mr-14 overflow-x-scroll scrollbar-hide'>
           <div
-            key={s.id}
-            onClick={() => setSubreddit(s.display_name_prefixed)}
-            className={`flex cursor-pointer items-center justify-center truncate rounded-xl bg-dark-400 p-3 px-5 text-center text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
-              subreddit === s.display_name_prefixed &&
-              'bg-primary-300/10 text-primary-400'
-            }`}
+            className='flex items-center space-x-4 transition-transform duration-200 ease-linear'
+            style={translateStyles}
           >
-            {s.display_name_prefixed}
+            {data?.map((s) => (
+              <div
+                key={s.id}
+                onClick={() => setSubreddit(s.display_name_prefixed)}
+                className={`min-w-min cursor-pointer truncate rounded-xl bg-dark-400 p-3 px-5 text-center text-sm font-bold hover:bg-primary-300/10 hover:text-primary-400 ${
+                  subreddit === s.display_name_prefixed &&
+                  'bg-primary-300/10 text-primary-400'
+                }`}
+              >
+                {s.display_name_prefixed}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <div className='absolute top-0 right-0 z-10 h-full w-auto bg-gradient-to-r from-transparent to-dark-500'>
+          <button
+            onClick={() => setTranslateXValue(translateXValue - 200)}
+            className='absolute right-0 top-1/2 z-10 flex h-full w-11 -translate-y-1/2 items-center justify-center rounded-xl bg-dark-300 font-bold hover:bg-primary-300/10 hover:text-primary-400'
+          >
+            <ChevronRightIcon className='h-5 w-5 font-bold' />
+          </button>
+        </div>
       </div>
     </div>
   );

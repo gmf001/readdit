@@ -12,7 +12,7 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = account.refresh_token;
       }
 
-      return Promise.resolve(token);
+      return token;
     },
     session({ session, token }) {
       if (session.user && token.id) {
@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
         session.refreshToken = token.refreshToken;
       }
 
-      return Promise.resolve(session);
+      return session;
     }
   },
   providers: [

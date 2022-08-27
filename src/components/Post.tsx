@@ -1,27 +1,22 @@
 import Image from 'next/image';
-import { format, fromUnixTime } from 'date-fns';
+import dayjs from 'dayjs';
 import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
-import { POST } from '@/api/reddit';
+import type { POST } from '@/api/reddit';
 
 const Post = (post: POST) => {
-  const date = fromUnixTime(post.created);
-  const formattedDate = format(date, 'd, MMM');
+  const date = dayjs.unix(post.created).format('D/MM');
 
   return (
-    <a
-      href={`https://reddit.com${post.permalink}`}
-      target='_blank'
-      className='group flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 hover:cursor-pointer hover:border-dark-200'
-      rel='noreferrer'
-    >
+    <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
           <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
             {post.subreddit_data.icon && (
-              <img
+              <Image
                 src={post.subreddit_data.icon}
                 alt={post.subreddit_data.title}
-                className='h-full w-full object-cover'
+                layout='fill'
+                objectFit='cover'
               />
             )}
           </div>
@@ -30,12 +25,16 @@ const Post = (post: POST) => {
           </div>
         </div>
 
-        <h2 className='text-xl font-bold text-white transition-colors duration-200 ease-in line-clamp-2 group-hover:text-primary-500'>
-          {post.title}
-        </h2>
-        <p className='text-xs font-semibold text-gray-400'>
-          Posted: {formattedDate}
-        </p>
+        <a
+          href={`https://reddit.com${post.permalink}`}
+          target='_blank'
+          rel='noreferrer'
+        >
+          <h2 className='text-xl font-bold text-white transition-colors duration-200 ease-in line-clamp-2 hover:text-primary-500'>
+            {post.title}
+          </h2>
+        </a>
+        <p className='text-xs font-semibold text-gray-400'>u/{post.author}</p>
       </div>
 
       <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
@@ -62,7 +61,7 @@ const Post = (post: POST) => {
           </span>
         </div>
       </div>
-    </a>
+    </div>
   );
 };
 
