@@ -20,6 +20,20 @@ const post = z.object({
   ups: z.number(),
   created: z.number(),
   likes: z.boolean().or(z.null()).default(null),
+  preview: z
+    .object({
+      images: z.array(
+        z.object({
+          source: z.object({
+            url: z.string()
+          })
+        })
+      )
+    })
+    .transform((i) => ({
+      image: i.images[0]?.source.url.replace(/&amp;/g, '&')
+    }))
+    .nullish(),
   subreddit_data: z
     .object({
       title: z.string(),

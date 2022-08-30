@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import dayjs from 'dayjs';
-import { ChevronDoubleUpIcon, AnnotationIcon } from '@heroicons/react/solid';
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
 import type { POST } from '@/api/reddit';
+import nFormatter from '@/utils/numberFormatter';
 
 const Post = (post: POST) => {
   const date = dayjs.unix(post.created).format('D/MM');
@@ -45,19 +46,26 @@ const Post = (post: POST) => {
             className='h-full w-full object-cover object-center'
           />
         )}
+        {post.preview?.image && (
+          <img
+            src={post.preview?.image}
+            alt={post.title}
+            className='h-full w-full object-cover object-center'
+          />
+        )}
       </div>
 
-      <div className='grid grid-cols-3 gap-x-8 px-2 pt-4'>
-        <div className='group flex items-center space-x-2'>
-          <ChevronDoubleUpIcon className='h-5 w-5 text-gray-400 group-hover:text-gray-200' />
-          <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
-            {post.ups}
+      <div className='flex items-center justify-between pt-3'>
+        <div className='flex items-center space-x-2 '>
+          <ArrowUpIcon className='h-4 w-4 text-gray-400 hover:text-gray-200' />
+          <span className='text-xs font-semibold text-gray-400'>
+            {nFormatter(post.ups)}
           </span>
+          <ArrowDownIcon className='h-4 w-4 text-gray-400 hover:text-gray-200' />
         </div>
-        <div className='group flex items-center space-x-2'>
-          <AnnotationIcon className='h-5 w-5 text-gray-400 group-hover:text-gray-200' />
-          <span className='text-xs font-semibold text-gray-400 group-hover:text-gray-200'>
-            {post.num_comments}
+        <div className='flex items-center space-x-2'>
+          <span className='text-xs font-semibold text-gray-400 hover:text-gray-200'>
+            {nFormatter(post.num_comments)} comments
           </span>
         </div>
       </div>
