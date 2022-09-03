@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import dayjs from 'dayjs';
+import nFormatter from '@/utils/numberFormatter';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
 import type { POST } from '@/api/reddit';
-import nFormatter from '@/utils/numberFormatter';
+import { trpc } from '@/api/trpc';
 
 const Post = (post: POST) => {
-  const date = dayjs.unix(post.created).format('D/MM');
+  const upvote = trpc.useMutation(['reddit.upvote']);
 
   return (
     <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
@@ -57,7 +57,11 @@ const Post = (post: POST) => {
 
       <div className='flex items-center justify-between pt-3'>
         <div className='flex items-center space-x-2 '>
-          <ArrowUpIcon className='h-4 w-4 text-gray-400 hover:text-gray-200' />
+          <ArrowUpIcon
+            onClick={() => upvote.mutate({ postId: post.id })}
+            className='h-4 w-4 text-gray-400 hover:text-gray-200'
+          />
+
           <span className='text-xs font-semibold text-gray-400'>
             {nFormatter(post.ups)}
           </span>

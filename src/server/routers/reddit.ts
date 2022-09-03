@@ -1,4 +1,4 @@
-import { getPosts, getSubscriptions } from '@/api/reddit';
+import { getPosts, getSubscriptions, upvotePost } from '@/api/reddit';
 import { createRouter } from '@/server/createRouter';
 import { z } from 'zod';
 
@@ -30,9 +30,16 @@ export const redditRouter = createRouter()
   })
   .query('mySubreddits', {
     async resolve({ ctx }) {
-      // protected route
-      const refreshToken = ctx.session?.refreshToken;
-      if (typeof refreshToken !== 'string') return;
-      return await getSubscriptions(refreshToken);
+      if (!ctx.refreshToken) return;
+      return await getSubscriptions(ctx.refreshToken);
+    }
+  })
+  .mutation('upvote', {
+    input: z.object({
+      postId: z.string()
+    }),
+    async resolve({ ctx, input }) {
+      if (!ctx.refreshToken) return;
+      return await upvotePost(input.postId);
     }
   });

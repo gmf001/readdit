@@ -1,4 +1,5 @@
 import { Snoo } from '@/utils/snoo';
+import clsx from 'clsx';
 import { z } from 'zod';
 
 export type SORTS = z.infer<typeof sorts>;
@@ -56,15 +57,20 @@ export async function getPosts(
     })
   });
 
-  let host = 'https://reddit.com/';
+  let host = 'https://reddit.com';
   const params = `after=t3_${after}`;
 
   if (typeof subreddit === 'string') {
-    host = host.concat(subreddit);
+    host = host.concat('/' + subreddit);
   }
 
-  const url = host + `/${sort}/.json?limit=${limit}&${params}`;
-  console.log('url', url);
+  const url = clsx(
+    host,
+    `/${sort}/.json?limit=${limit}`,
+    after && `&${params}`
+  ).replace(/\s/g, '');
+
+  console.log('fetching url...', url);
 
   const res = await (await fetch(url)).json();
 
@@ -104,4 +110,16 @@ export async function getSubreddit(name: string) {
 // authentication required
 export async function getSubscriptions(token: string) {
   return await (await Snoo(token)).getDefaultSubreddits({ limit: 40 });
+}
+
+export async function upvotePost(postId: string) {
+  console.log('upvoting', postId);
+  const res = await fetch(`https://reddit.com/api/vote?dir=1&id=t3_${postId}`, {
+    method: 'POST'
+  });
+
+  const json = await res.json();
+
+  console.log('json', json);
+  return true;
 }

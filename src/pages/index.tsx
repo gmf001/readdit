@@ -50,12 +50,7 @@ function Home() {
   if (isLoading) {
     return (
       <>
-        <Tags
-          query={query}
-          setQuery={setQuery}
-          subreddit={subreddit}
-          setSubreddit={setSubreddit}
-        />
+        <Tags query={query} setQuery={setQuery} />
         <div className='my-8 grid grid-cols-4 gap-x-8 gap-y-10'>
           {skeletonPosts(20)}
         </div>
@@ -63,16 +58,9 @@ function Home() {
     );
   }
 
-  console.log('frontpage', data);
-
   return (
     <>
-      <Tags
-        query={query}
-        setQuery={setQuery}
-        subreddit={subreddit}
-        setSubreddit={setSubreddit}
-      />
+      <Tags query={query} setQuery={setQuery} />
       <div
         ref={parent}
         className='my-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'

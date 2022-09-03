@@ -32,8 +32,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.REDDIT_CLIENT_SECRET,
       profile(profile) {
         return {
-          id: profile.id,
-          name: profile.name,
+          ...profile,
           image: profile.snoovatar_img
         };
       },
