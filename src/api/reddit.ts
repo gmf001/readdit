@@ -17,6 +17,8 @@ const post = z.object({
   url: z.string(),
   is_video: z.boolean(),
   is_self: z.boolean(),
+  is_twitter: z.boolean().nullish(),
+  selftext: z.string().nullish(),
   num_comments: z.number(),
   ups: z.number(),
   created: z.number(),
@@ -83,6 +85,9 @@ export async function getPosts(
         icon_img ||
         'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
       post.subreddit_data.title = title;
+      if (post.is_self && post.selftext?.includes('twitter')) {
+        post.is_twitter = true;
+      }
       return post;
     })
   );
