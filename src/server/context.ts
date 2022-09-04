@@ -6,7 +6,7 @@ type ContextOptions = trpcNext.CreateNextContextOptions;
 
 export const createContext = async ({ req, res }: ContextOptions) => {
   const session = await getSession({ req });
-  const refreshToken = session?.refreshToken;
+  const refreshToken = session?.refreshToken ?? null;
   return { req, res, session, refreshToken };
 };
 

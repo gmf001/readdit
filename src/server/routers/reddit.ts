@@ -31,15 +31,13 @@ export const redditRouter = createRouter()
   .query('mySubreddits', {
     async resolve({ ctx }) {
       if (!ctx.refreshToken) return;
-      return await getSubscriptions(ctx.refreshToken);
+      return getSubscriptions(ctx.refreshToken);
     }
   })
   .mutation('upvote', {
-    input: z.object({
-      postId: z.string()
-    }),
-    async resolve({ ctx, input }) {
+    input: z.object({ postId: z.string() }),
+    async resolve({ input, ctx }) {
       if (!ctx.refreshToken) return;
-      return await upvotePost(input.postId);
+      return upvotePost(ctx.refreshToken, input.postId);
     }
   });

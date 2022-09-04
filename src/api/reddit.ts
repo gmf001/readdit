@@ -1,5 +1,6 @@
 import { Snoo } from '@/utils/snoo';
 import clsx from 'clsx';
+import { getSession } from 'next-auth/react';
 import { z } from 'zod';
 
 export type SORTS = z.infer<typeof sorts>;
@@ -22,7 +23,7 @@ const post = z.object({
   num_comments: z.number(),
   ups: z.number(),
   created: z.number(),
-  likes: z.boolean().or(z.null()).default(null),
+  likes: z.boolean().nullish(), // has upvoted or not
   preview: z
     .object({
       images: z.array(
@@ -95,7 +96,39 @@ export async function getPosts(
   return posts;
 }
 
-export async function getSubreddit(name: string) {
+export function getPostss({
+  token,
+  limit,
+  sort,
+  after,
+  subreddit
+}: {
+  token: string;
+  limit: number;
+  sort: 'hot' | 'best' | 'new' | 'top';
+  after: string | undefined;
+  subreddit: string | undefined;
+}) {
+  return Snoo(token).then((r) => {
+    if (sort == 'best') {
+      return r.getBest({ after, limit });
+    }
+
+    if (sort == 'hot') {
+      return r.getHot(subreddit, { after, limit });
+    }
+
+    if (sort == 'new') {
+      return r.getNew(subreddit, { after, limit });
+    }
+
+    if (sort == 'top') {
+      return r.getTop(subreddit, { after, limit });
+    }
+  });
+}
+
+async function getSubreddit(name: string) {
   const subredditValidator = z
     .object({
       data: z.object({
@@ -112,19 +145,21 @@ export async function getSubreddit(name: string) {
   return subredditValidator.parse(res);
 }
 
-// authentication required
-export async function getSubscriptions(token: string) {
-  return await (await Snoo(token)).getDefaultSubreddits({ limit: 40 });
+export function getSubreddit2(token: string, name: string) {
+  return Snoo(token).then((r) => {
+    return r.getSubreddit(name);
+  });
 }
 
-export async function upvotePost(postId: string) {
-  console.log('upvoting', postId);
-  const res = await fetch(`https://reddit.com/api/vote?dir=1&id=t3_${postId}`, {
-    method: 'POST'
+export function getSubscriptions(token: string) {
+  return Snoo(token).then((r) => {
+    return r.getDefaultSubreddits({ limit: 40 });
   });
+}
 
-  const json = await res.json();
-
-  console.log('json', json);
-  return true;
+export function upvotePost(token: string, postId: string) {
+  console.log('upvoting post', postId);
+  return Snoo(token).then((r) => {
+    r.getSubmission(postId).upvote();
+  });
 }

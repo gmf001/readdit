@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
       },
       authorization: {
         params: {
-          scope: 'identity mysubreddits read',
+          scope: 'identity mysubreddits read vote',
           duration: 'permanent'
         }
       }

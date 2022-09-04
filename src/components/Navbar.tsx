@@ -8,7 +8,6 @@ import { trpc } from '@/api/trpc';
 const DropdownMenu = () => {
   const options = ['Home', 'Popular', 'All'];
   const [selected, setSelected] = useState('Home');
-
   const { data: subscriptions } = trpc.useQuery(['reddit.mySubreddits']);
 
   return (
