@@ -1,7 +1,8 @@
 import { Snoo } from '@/utils/snoo';
 import clsx from 'clsx';
-import { getSession } from 'next-auth/react';
 import { z } from 'zod';
+
+const REDDIT = 'https://www.reddit.com';
 
 export type SORTS = z.infer<typeof sorts>;
 export type POST = z.infer<typeof post>;
@@ -151,6 +152,7 @@ export function getSubreddit2(token: string, name: string) {
   });
 }
 
+// authenticated requests (use snoowrap)
 export function getSubscriptions(token: string) {
   return Snoo(token).then((r) => {
     return r.getDefaultSubreddits({ limit: 40 });

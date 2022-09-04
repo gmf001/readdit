@@ -10,6 +10,7 @@ export const authOptions: NextAuthOptions = {
 
       if (account) {
         token.refreshToken = account.refresh_token;
+        token.accessToken = account.access_token;
       }
 
       return token;
@@ -19,8 +20,9 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
       }
 
-      if (typeof token.refreshToken === 'string') {
+      if (token) {
         session.refreshToken = token.refreshToken;
+        session.accessToken = token.accessToken;
       }
 
       return session;

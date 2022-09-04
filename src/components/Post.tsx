@@ -6,9 +6,10 @@ import { trpc } from '@/api/trpc';
 import clsx from 'clsx';
 
 const Post = (post: POST) => {
+  const context = trpc.useContext();
   const upvote = trpc.useMutation(['reddit.upvote'], {
-    onSuccess(data, variables, context) {
-      console.log(data);
+    onSuccess() {
+      context.invalidateQueries(['reddit.myPosts']);
     }
   });
 
@@ -81,12 +82,11 @@ const Post = (post: POST) => {
           <ArrowUpIcon
             onClick={() => upvote.mutate({ postId: post.id })}
             className={clsx(
-              'h-4 w-4 text-gray-400 hover:text-gray-200',
-              post.likes && '!text-indigo-300'
+              'h-4 w-4 cursor-pointer font-bold text-gray-400 hover:text-gray-200',
+              post.likes && '!text-orange-500'
             )}
           />
-          {JSON.stringify(post.likes, null, 2)}
-          {JSON.stringify(post.id, null, 2)}
+
           <span className='text-xs font-semibold text-gray-400'>
             {nFormatter(post.ups)}
           </span>
