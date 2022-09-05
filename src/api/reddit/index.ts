@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { redditPostValidator } from './types';
+import { postValidator, subscriptionValidator } from './types';
 
 interface IPosts {
   sort: 'hot' | 'best' | 'new' | 'top';
@@ -16,17 +16,13 @@ export async function getPosts({
   cursor: after,
   subreddit
 }: IPosts) {
-  console.log('fetching posts...', token && 'authenicated');
-
   let url = 'https://reddit.com';
   let headers = {};
   let params = {};
 
   if (token) {
     url = 'https://oauth.reddit.com';
-    headers = {
-      authorization: `bearer ${token}`
-    };
+    headers = { authorization: `bearer ${token}` };
   }
 
   if (subreddit) {
@@ -44,17 +40,16 @@ export async function getPosts({
   console.log('url', url, params);
   const { data } = await axios.get(url, { headers, params });
 
-  // console.log('data', data.data.children[0]);
-
-  return redditPostValidator.parse(data).data;
+  return postValidator.parse(data).data;
 }
 
-export async function vote(
-  dir: number,
-  id: string,
-  url: string,
-  token: string
-) {
+interface IVote {
+  dir: number;
+  id: string;
+  token: string;
+}
+
+export async function vote({ dir, id, token }: IVote) {
   await fetch('https://oauth.reddit.com/api/vote', {
     method: 'POST',
     headers: {
@@ -64,10 +59,17 @@ export async function vote(
     body: `id=${id}&dir=${dir}&rank=3`
   });
 
-  return true;
+  const link = `https://api.reddit.com/api/info`;
+  const params = { raw_json: 1, id };
+  const { data } = await axios.get(link, { params });
 
-  // const { data } = await axios.get('https://reddit.com' + url + '.json');
-  // console.log('data', data);
+  return postValidator.parse(data).data.children[0];
+}
 
-  // return data;
+export async function getSubscriptions(token: string) {
+  const url = 'https://oauth.reddit.com/subreddits/mine/subscriber';
+  const headers = { authorization: `bearer ${token}` };
+  const params = { limit: 50 };
+  const { data } = await axios.get(url, { headers, params });
+  return subscriptionValidator.parse(data).data.children;
 }

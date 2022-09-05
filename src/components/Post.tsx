@@ -3,20 +3,27 @@ import nFormatter from '@/utils/numberFormatter';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
 import { trpc } from '@/api/trpc';
 import clsx from 'clsx';
-import type { RedditPost } from '@/reddit/types';
+import type { RedditPost } from '@/api/reddit/types';
+import { useState } from 'react';
 
 const Post = (post: RedditPost) => {
   const context = trpc.useContext();
-  const upvote = trpc.useMutation(['reddit.upvote'], {
-    onSuccess(data) {
-      if (data) {
-        context.invalidateQueries(['reddit.myPosts']);
+  const [hasLiked, setHasLiked] = useState(post.likes);
+
+  const vote = trpc.useMutation(['reddit.vote'], {
+    onSuccess(newData, variables) {
+      if (newData) {
+        if (variables.dir == 1) {
+          setHasLiked(true);
+        } else {
+          setHasLiked(false);
+        }
       }
     }
   });
 
   const iconImage =
-    post.sr_detail.icon_img ||
+    post.sr_detail?.icon_img ||
     'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
 
   return (
@@ -26,7 +33,7 @@ const Post = (post: RedditPost) => {
           <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
             <Image
               src={iconImage}
-              alt={post.sr_detail.title}
+              alt={post.sr_detail?.title}
               layout='fill'
               objectFit='cover'
             />
@@ -90,19 +97,20 @@ const Post = (post: RedditPost) => {
       <div className='flex items-center justify-between pt-3'>
         <div className='flex items-center space-x-2 '>
           <ArrowUpIcon
-            onClick={() =>
-              upvote.mutate({ id: post.name, url: post.permalink })
-            }
+            onClick={() => vote.mutate({ id: post.name, dir: 1 })}
             className={clsx(
               'h-4 w-4 cursor-pointer font-bold text-gray-400 hover:text-gray-200',
-              post.likes && '!text-orange-500'
+              hasLiked && '!text-orange-500'
             )}
           />
 
           <span className='text-xs font-semibold text-gray-400'>
-            {nFormatter(post.ups)}
+            {nFormatter(post.ups, hasLiked)}
           </span>
-          <ArrowDownIcon className='h-4 w-4 text-gray-400 hover:text-gray-200' />
+          <ArrowDownIcon
+            onClick={() => vote.mutate({ id: post.name, dir: -1 })}
+            className='h-4 w-4 text-gray-400 hover:text-gray-200'
+          />
         </div>
         <div className='flex items-center space-x-2'>
           <span className='text-xs font-semibold text-gray-400 hover:text-gray-200'>

@@ -1,8 +1,8 @@
-import type { SORTS } from '@/api/reddit';
+import type { SortBy } from '@/api/reddit/types';
 
 type Props = {
-  query: SORTS;
-  setQuery: (q: SORTS) => void;
+  query: SortBy;
+  setQuery: (q: SortBy) => void;
 };
 
 function Tags({ query, setQuery }: Props) {

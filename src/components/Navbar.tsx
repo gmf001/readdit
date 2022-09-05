@@ -8,7 +8,7 @@ import { trpc } from '@/api/trpc';
 const DropdownMenu = () => {
   const options = ['Home', 'Popular', 'All'];
   const [selected, setSelected] = useState('Home');
-  const { data: subscriptions } = trpc.useQuery(['reddit.mySubreddits']);
+  const { data: subscriptions } = trpc.useQuery(['reddit.subscriptions']);
 
   return (
     <div className='hidden h-full w-60 flex-none md:block'>
@@ -43,7 +43,7 @@ const DropdownMenu = () => {
                       </Menu.Item>
                     ))}
                   </div>
-                  {subscriptions?.length && (
+                  {subscriptions && (
                     <div>
                       <strong className='block p-2 pt-4 text-xs font-medium uppercase text-gray-400'>
                         Subscriptions
@@ -51,7 +51,7 @@ const DropdownMenu = () => {
 
                       <div className='h-52 overflow-y-scroll scrollbar-hide'>
                         {subscriptions.map((sub) => (
-                          <Menu.Item key={sub.id}>
+                          <Menu.Item key={sub.name}>
                             <button
                               onClick={() =>
                                 setSelected(sub.display_name_prefixed)

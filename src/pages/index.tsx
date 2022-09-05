@@ -5,10 +5,10 @@ import { trpc } from '@/api/trpc';
 import Post from '@/components/Post';
 import PostSkeleton from '@/components/PostSkeleton';
 import Tags from '@/components/Tags';
-import type { SORTS } from '@/api/reddit';
+import type { SortBy } from '@/api/reddit/types';
 
 function Home() {
-  const [query, setQuery] = useState<SORTS>('best');
+  const [query, setQuery] = useState<SortBy>('best');
   const [subreddit, setSubreddit] = useState<string | undefined>();
 
   const { ref, inView } = useInView();
@@ -21,7 +21,7 @@ function Home() {
     isFetchingNextPage,
     refetch,
     isRefetching
-  } = trpc.useInfiniteQuery(['reddit.myPosts', { sort: query, subreddit }], {
+  } = trpc.useInfiniteQuery(['reddit.posts', { sort: query, subreddit }], {
     getNextPageParam: (lastPage) => lastPage?.nextCursor
   });
 

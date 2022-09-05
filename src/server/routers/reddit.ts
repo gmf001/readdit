@@ -1,10 +1,9 @@
-import { getSubscriptions } from '@/api/reddit';
-import { getPosts, vote } from '@/reddit';
+import { getSubscriptions, getPosts, vote } from '@/api/reddit';
 import { createRouter } from '@/server/createRouter';
 import { z } from 'zod';
 
 export const redditRouter = createRouter()
-  .query('myPosts', {
+  .query('posts', {
     input: z.object({
       limit: z.number().default(25),
       sort: z.enum(['hot', 'best', 'new', 'top']).default('hot'),
@@ -13,7 +12,7 @@ export const redditRouter = createRouter()
     }),
     async resolve({ input, ctx }) {
       const { cursor, limit } = input;
-      const posts = await getPosts({ ...input, token: ctx.accessToken });
+      const posts = await getPosts({ ...input, token: ctx.token });
 
       let nextCursor: typeof cursor | undefined = undefined;
 
@@ -28,17 +27,19 @@ export const redditRouter = createRouter()
       };
     }
   })
-  .query('mySubreddits', {
+  .query('subscriptions', {
     async resolve({ ctx }) {
       if (!ctx.token) return;
       return getSubscriptions(ctx.token);
     }
   })
-  .mutation('upvote', {
-    input: z.object({ id: z.string(), url: z.string() }),
+  .mutation('vote', {
+    input: z.object({
+      dir: z.number(),
+      id: z.string()
+    }),
     async resolve({ input, ctx }) {
-      if (!ctx.accessToken) return;
-      console.log('upvoting', input.id);
-      return vote(1, input.id, input.url, ctx.accessToken);
+      if (!ctx.token) return;
+      return vote({ ...input, token: ctx.token });
     }
   });
