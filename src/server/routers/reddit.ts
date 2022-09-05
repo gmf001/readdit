@@ -1,5 +1,5 @@
 import { getSubscriptions } from '@/api/reddit';
-import { getPosts, upvotePost } from '@/reddit';
+import { getPosts, vote } from '@/reddit';
 import { createRouter } from '@/server/createRouter';
 import { z } from 'zod';
 
@@ -19,7 +19,7 @@ export const redditRouter = createRouter()
 
       if (posts.children.length >= limit) {
         const nextItem = posts.children.pop();
-        nextCursor = nextItem!.id;
+        nextCursor = nextItem!.name;
       }
 
       return {
@@ -35,10 +35,10 @@ export const redditRouter = createRouter()
     }
   })
   .mutation('upvote', {
-    input: z.object({ postId: z.string() }),
+    input: z.object({ id: z.string(), url: z.string() }),
     async resolve({ input, ctx }) {
       if (!ctx.accessToken) return;
-      console.log('upvoting', input.postId);
-      return upvotePost(1, input.postId, ctx.accessToken);
+      console.log('upvoting', input.id);
+      return vote(1, input.id, input.url, ctx.accessToken);
     }
   });

@@ -7,9 +7,20 @@ export const sortBy = z.enum(['hot', 'best', 'new', 'top']);
 
 export const redditPost = z.object({
   id: z.string(),
+  name: z.string(),
   author: z.string(),
   title: z.string(),
   subreddit: z.string(),
+  sr_detail: z.object({
+    title: z.string(),
+    icon_img: z.string().nullish(),
+    display_name: z.string(),
+    header_img: z.string().nullish(),
+    display_name_prefixed: z.string(),
+    subscribers: z.number(),
+    url: z.string(),
+    public_description: z.string()
+  }),
   thumbnail: z.string(),
   permalink: z.string(),
   url: z.string(),
@@ -20,7 +31,7 @@ export const redditPost = z.object({
   num_comments: z.number(),
   ups: z.number(),
   created: z.number(),
-  likes: z.boolean().nullish(), // has upvoted or not
+  likes: z.boolean().nullish(), // has voted
   preview: z
     .object({
       images: z.array(
@@ -34,13 +45,7 @@ export const redditPost = z.object({
     .transform((i) => ({
       image: i.images[0]?.source.url.replace(/&amp;/g, '&')
     }))
-    .nullish(),
-  subreddit_data: z
-    .object({
-      title: z.string(),
-      icon: z.string()
-    })
-    .default({ title: '', icon: '' })
+    .nullish()
 });
 
 export const redditPostValidator = z.object({

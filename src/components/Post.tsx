@@ -1,31 +1,35 @@
 import Image from 'next/image';
 import nFormatter from '@/utils/numberFormatter';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
-import type { POST } from '@/api/reddit';
 import { trpc } from '@/api/trpc';
 import clsx from 'clsx';
+import type { RedditPost } from '@/reddit/types';
 
-const Post = (post: POST) => {
+const Post = (post: RedditPost) => {
   const context = trpc.useContext();
   const upvote = trpc.useMutation(['reddit.upvote'], {
-    onSuccess() {
-      context.invalidateQueries(['reddit.myPosts']);
+    onSuccess(data) {
+      if (data) {
+        context.invalidateQueries(['reddit.myPosts']);
+      }
     }
   });
+
+  const iconImage =
+    post.sr_detail.icon_img ||
+    'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
 
   return (
     <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
           <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
-            {post.subreddit_data.icon && (
-              <Image
-                src={post.subreddit_data.icon}
-                alt={post.subreddit_data.title}
-                layout='fill'
-                objectFit='cover'
-              />
-            )}
+            <Image
+              src={iconImage}
+              alt={post.sr_detail.title}
+              layout='fill'
+              objectFit='cover'
+            />
           </div>
           <div className='text-xs font-semibold text-gray-500'>
             (r/{post?.subreddit})
@@ -62,16 +66,22 @@ const Post = (post: POST) => {
 
       <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
         {/(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url) && (
-          <img
+          <Image
             src={post.url}
             alt={post.title}
+            placeholder='blur'
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+            layout='fill'
             className='h-full w-full object-cover object-center'
           />
         )}
         {post.preview?.image && (
-          <img
+          <Image
             src={post.preview?.image}
             alt={post.title}
+            placeholder='blur'
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+            layout='fill'
             className='h-full w-full object-cover object-center'
           />
         )}
@@ -80,7 +90,9 @@ const Post = (post: POST) => {
       <div className='flex items-center justify-between pt-3'>
         <div className='flex items-center space-x-2 '>
           <ArrowUpIcon
-            onClick={() => upvote.mutate({ postId: post.id })}
+            onClick={() =>
+              upvote.mutate({ id: post.name, url: post.permalink })
+            }
             className={clsx(
               'h-4 w-4 cursor-pointer font-bold text-gray-400 hover:text-gray-200',
               post.likes && '!text-orange-500'
