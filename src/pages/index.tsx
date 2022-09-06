@@ -6,10 +6,12 @@ import Post from '@/components/Post';
 import PostSkeleton from '@/components/PostSkeleton';
 import Tags from '@/components/Tags';
 import type { SortBy } from '@/api/reddit/types';
+import { useAtom } from 'jotai';
+import { filterAtom } from '../state/index';
 
 function Home() {
   const [query, setQuery] = useState<SortBy>('best');
-  const [subreddit, setSubreddit] = useState<string | undefined>();
+  const [subreddit] = useAtom(filterAtom);
 
   const { ref, inView } = useInView();
   const parent = useRef(null);
@@ -47,32 +49,24 @@ function Home() {
       .map((_, id) => <PostSkeleton key={id} />);
   };
 
-  if (isLoading) {
-    return (
-      <>
-        <Tags query={query} setQuery={setQuery} />
-        <div className='my-8 grid grid-cols-4 gap-x-8 gap-y-10'>
-          {skeletonPosts(20)}
-        </div>
-      </>
-    );
-  }
-
   return (
-    <>
+    <div ref={parent}>
       <Tags query={query} setQuery={setQuery} />
-      <div
-        ref={parent}
-        className='my-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-      >
-        {data?.pages.map((page) =>
-          page?.posts.map((post, key) => <Post key={key} {...post} />)
+      <div className='my-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+        {isLoading ? (
+          skeletonPosts(20)
+        ) : (
+          <>
+            {data?.pages.map((page) =>
+              page?.posts.map((post, key) => <Post key={key} {...post} />)
+            )}
+            {isFetchingNextPage && skeletonPosts(25)}
+            {isRefetching && skeletonPosts(25)}
+            <span ref={ref}></span>
+          </>
         )}
-        {isFetchingNextPage && skeletonPosts(25)}
-        {isRefetching && skeletonPosts(25)}
-        <span ref={ref}></span>
       </div>
-    </>
+    </div>
   );
 }
 

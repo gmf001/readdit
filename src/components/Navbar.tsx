@@ -2,12 +2,26 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Menu, Transition } from '@headlessui/react';
-import { useState } from 'react';
 import { trpc } from '@/api/trpc';
+import { useAtom } from 'jotai';
+import { filterAtom } from '@/state';
 
 const DropdownMenu = () => {
-  const options = ['Home', 'Popular', 'All'];
-  const [selected, setSelected] = useState('Home');
+  const options = [
+    {
+      title: 'Home',
+      value: ''
+    },
+    {
+      title: 'Popular',
+      value: 'popular'
+    },
+    {
+      title: 'All',
+      value: 'all'
+    }
+  ];
+  const [selected, setSelected] = useAtom(filterAtom);
   const { data: subscriptions } = trpc.useQuery(['reddit.subscriptions']);
 
   return (
@@ -17,7 +31,7 @@ const DropdownMenu = () => {
           {({ open }) => (
             <>
               <Menu.Button className='rounded-2 hover:border-th-border flex h-full w-full flex-none flex-row items-center justify-between rounded-md border border-dark-300 px-3.5 text-sm font-semibold outline-none hover:cursor-pointer hover:border-dark-200'>
-                <span>{selected}</span>
+                <span>{selected || 'Home'}</span>
                 <ChevronDownIcon className='h-5 w-5' />
               </Menu.Button>
 
@@ -35,10 +49,10 @@ const DropdownMenu = () => {
                     {options.map((option, i) => (
                       <Menu.Item key={i}>
                         <button
-                          onClick={() => setSelected(option)}
-                          className='flex w-full justify-between rounded-lg p-2 text-left text-sm font-semibold leading-5 hover:bg-indigo-300/20 hover:text-indigo-300'
+                          onClick={() => setSelected(option.value)}
+                          className='flex w-full justify-between rounded-lg p-2 text-left text-sm font-semibold capitalize leading-5 hover:bg-indigo-300/20 hover:text-indigo-300'
                         >
-                          {option}
+                          {option.title}
                         </button>
                       </Menu.Item>
                     ))}
@@ -53,9 +67,7 @@ const DropdownMenu = () => {
                         {subscriptions.map((sub) => (
                           <Menu.Item key={sub.name}>
                             <button
-                              onClick={() =>
-                                setSelected(sub.display_name_prefixed)
-                              }
+                              onClick={() => setSelected(sub.display_name)}
                               className='flex w-full justify-between rounded-lg p-2 text-left text-sm font-semibold leading-5 hover:bg-indigo-300/20 hover:text-indigo-300'
                             >
                               {sub.display_name_prefixed}

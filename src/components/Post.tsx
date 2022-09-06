@@ -5,9 +5,9 @@ import { trpc } from '@/api/trpc';
 import clsx from 'clsx';
 import type { RedditPost } from '@/api/reddit/types';
 import { useState } from 'react';
+import redditIcon from '/public/images/reddit-icon.png';
 
 const Post = (post: RedditPost) => {
-  const context = trpc.useContext();
   const [hasLiked, setHasLiked] = useState(post.likes);
 
   const vote = trpc.useMutation(['reddit.vote'], {
@@ -23,14 +23,91 @@ const Post = (post: RedditPost) => {
   });
 
   const iconImage =
-    post.sr_detail?.icon_img ||
-    'https://user-images.githubusercontent.com/33750251/59486444-3699ab80-8e71-11e9-9f9a-836e431dcbfd.png';
+    post.sr_detail?.community_icon || post.sr_detail?.icon_img || redditIcon;
+
+  const renderPlaceholder = () => {
+    if (post.is_self && post.selftext) {
+      return (
+        <div>
+          <p className='text-dark-100 line-clamp-6'>{post.selftext}</p>
+        </div>
+      );
+    }
+
+    if (post.is_video && post.secure_media) {
+      return (
+        <video
+          className='h-full w-full bg-dark-600'
+          autoPlay={true}
+          muted={true}
+          loop={true}
+          playsInline
+        >
+          <source
+            data-src={post.secure_media.reddit_video}
+            src={post.secure_media.reddit_video}
+            type='video/mp4'
+          />
+        </video>
+      );
+    }
+
+    if (/(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url)) {
+      return (
+        <Image
+          src={post.url}
+          alt={post.title}
+          placeholder='blur'
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+          layout='fill'
+          className='h-full w-full object-cover object-center'
+        />
+      );
+    }
+
+    if (post.preview?.image) {
+      return (
+        <Image
+          src={post.preview?.image}
+          alt={post.title}
+          placeholder='blur'
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+          layout='fill'
+          className='h-full w-full object-cover object-center'
+        />
+      );
+    }
+
+    if (post.is_gallery && post.gallery_data?.items[0]) {
+      return (
+        <Image
+          src={post.gallery_data.items[0].url}
+          alt={post.title}
+          placeholder='blur'
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+          layout='fill'
+          className='h-full w-full object-cover object-center'
+        />
+      );
+    }
+
+    return (
+      <Image
+        src={iconImage}
+        alt={post.title}
+        placeholder='blur'
+        blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+        layout='fill'
+        className='h-full w-full object-cover object-center'
+      />
+    );
+  };
 
   return (
     <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
-          <div className='relative h-10 w-10 overflow-hidden rounded-full bg-dark-100'>
+          <div className='relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-white'>
             <Image
               src={iconImage}
               alt={post.sr_detail?.title}
@@ -53,45 +130,10 @@ const Post = (post: RedditPost) => {
           </h2>
         </a>
         <p className='text-xs font-semibold text-gray-400'>u/{post.author}</p>
-        {/* {post.is_twitter && post.selftext && (
-          <>
-            <blockquote
-              className='twitter-tweet'
-              data-dnt='true'
-              data-theme='dark'
-            >
-              <p lang='en' dir='ltr'>
-                Sources: The CFP Board of Managers has decided on a 12-team
-                College Football Playoff during today&#39;s meeting.
-              </p>
-              &mdash; Pete Thamel (@PeteThamel){' '}
-              <a href={post.selftext}>September 2, 2022</a>
-            </blockquote>{' '}
-          </>
-        )} */}
       </div>
 
       <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
-        {/(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(post.url) && (
-          <Image
-            src={post.url}
-            alt={post.title}
-            placeholder='blur'
-            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
-            layout='fill'
-            className='h-full w-full object-cover object-center'
-          />
-        )}
-        {post.preview?.image && (
-          <Image
-            src={post.preview?.image}
-            alt={post.title}
-            placeholder='blur'
-            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
-            layout='fill'
-            className='h-full w-full object-cover object-center'
-          />
-        )}
+        {renderPlaceholder()}
       </div>
 
       <div className='flex items-center justify-between pt-3'>

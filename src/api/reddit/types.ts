@@ -38,6 +38,7 @@ export const post = z.object({
   permalink: z.string(),
   url: z.string(),
   is_video: z.boolean(),
+  is_gallery: z.boolean().nullish(),
   is_self: z.boolean(),
   is_twitter: z.boolean().nullish(),
   selftext: z.string().nullish(),
@@ -45,7 +46,32 @@ export const post = z.object({
   ups: z.number(),
   created: z.number(),
   likes: z.boolean().nullish(), // has voted
-  preview: previewImage
+  preview: previewImage,
+  secure_media: z
+    .object({
+      reddit_video: z
+        .object({
+          fallback_url: z.string()
+        })
+        .nullish()
+        .transform((v) => v?.fallback_url)
+    })
+    .nullish(),
+  gallery_data: z
+    .object({
+      items: z.array(
+        z
+          .object({
+            id: z.number(),
+            media_id: z.string()
+          })
+          .transform((i) => ({
+            ...i,
+            url: `https://i.redd.it/${i.media_id}.jpg`
+          }))
+      )
+    })
+    .nullish()
 });
 
 export const postValidator = z.object({
