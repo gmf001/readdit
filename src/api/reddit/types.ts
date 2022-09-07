@@ -12,6 +12,7 @@ export const subscription = z.object({
   community_icon: z.string().nullish(),
   display_name: z.string(),
   header_img: z.string().nullish(),
+  banner_img: z.string().nullish(),
   display_name_prefixed: z.string(),
   subscribers: z.number(),
   url: z.string(),

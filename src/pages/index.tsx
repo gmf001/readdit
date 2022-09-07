@@ -7,11 +7,11 @@ import PostSkeleton from '@/components/PostSkeleton';
 import Tags from '@/components/Tags';
 import type { SortBy } from '@/api/reddit/types';
 import { useAtom } from 'jotai';
-import { filterAtom } from '../state/index';
+import { filterAtom } from '@/store';
 
 function Home() {
   const [query, setQuery] = useState<SortBy>('best');
-  const [subreddit] = useAtom(filterAtom);
+  const [filter] = useAtom(filterAtom);
 
   const { ref, inView } = useInView();
   const parent = useRef(null);
@@ -23,13 +23,16 @@ function Home() {
     isFetchingNextPage,
     refetch,
     isRefetching
-  } = trpc.useInfiniteQuery(['reddit.posts', { sort: query, subreddit }], {
-    getNextPageParam: (lastPage) => lastPage?.nextCursor
-  });
+  } = trpc.useInfiniteQuery(
+    ['reddit.posts', { sort: query, subreddit: filter.value }],
+    {
+      getNextPageParam: (lastPage) => lastPage?.nextCursor
+    }
+  );
 
   useEffect(() => {
     refetch();
-  }, [query, subreddit, refetch]);
+  }, [query, filter, refetch]);
 
   useEffect(() => {
     if (inView) {

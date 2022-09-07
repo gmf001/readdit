@@ -91,6 +91,19 @@ const Post = (post: RedditPost) => {
       );
     }
 
+    if (post.sr_detail?.banner_img) {
+      return (
+        <Image
+          src={post.sr_detail?.banner_img}
+          alt={post.title}
+          placeholder='blur'
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII='
+          layout='fill'
+          className='h-full w-full object-cover object-center'
+        />
+      );
+    }
+
     return (
       <Image
         src={iconImage}
