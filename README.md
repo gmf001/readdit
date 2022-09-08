@@ -2,7 +2,10 @@
 
 ## Built with
 
-- T3 Stack
+- Next, TS, tRPC
 - Reddit API
 
 ## Features
+
+- Infinite Scrolling
+- Dark Theme

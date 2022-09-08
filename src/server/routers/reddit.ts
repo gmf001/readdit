@@ -5,7 +5,7 @@ import { z } from 'zod';
 export const redditRouter = createRouter()
   .query('posts', {
     input: z.object({
-      limit: z.number().default(25),
+      limit: z.number().default(17),
       sort: z.enum(['hot', 'best', 'new', 'top']).default('hot'),
       cursor: z.string().optional(),
       subreddit: z.string().optional()

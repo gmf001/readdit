@@ -46,6 +46,7 @@ export const post = z.object({
   num_comments: z.number(),
   ups: z.number(),
   created: z.number(),
+  post_hint: z.string().nullish(),
   likes: z.boolean().nullish(), // has voted
   preview: previewImage,
   secure_media: z

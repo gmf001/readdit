@@ -19,7 +19,6 @@
     "@trpc/server": "^9.25.3",
     "axios": "^0.27.2",
     "clsx": "^1.2.1",
-    "dayjs": "^1.11.5",
     "jotai": "^1.8.2",
     "next": "12.2.1",
     "next-auth": "^4.9.0",
@@ -28,6 +27,7 @@
     "react-intersection-observer": "^9.4.0",
     "react-query": "^3.39.1",
     "superjson": "^1.9.1",
+    "timeago.js": "^4.0.2",
     "zod": "^3.17.3"
   },
   "devDependencies": {

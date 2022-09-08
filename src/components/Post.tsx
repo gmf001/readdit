@@ -1,14 +1,16 @@
 import Image from 'next/image';
-import nFormatter from '@/utils/numberFormatter';
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
-import { trpc } from '@/api/trpc';
 import clsx from 'clsx';
-import type { RedditPost } from '@/api/reddit/types';
 import { useState } from 'react';
+import nFormatter from '@/utils/numberFormatter';
+import { trpc } from '@/api/trpc';
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/solid';
+import { format } from 'timeago.js';
+import type { RedditPost } from '@/api/reddit/types';
 import redditIcon from '/public/images/reddit-icon.png';
 
 const Post = (post: RedditPost) => {
   const [hasLiked, setHasLiked] = useState(post.likes);
+  console.log('post', post);
 
   const vote = trpc.useMutation(['reddit.vote'], {
     onSuccess(newData, variables) {
@@ -117,7 +119,7 @@ const Post = (post: RedditPost) => {
   };
 
   return (
-    <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
+    <div className='flex flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
           <div className='relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-white'>
@@ -142,10 +144,25 @@ const Post = (post: RedditPost) => {
             {post.title}
           </h2>
         </a>
-        <p className='text-xs font-semibold text-gray-400'>u/{post.author}</p>
+        <p className='text-xs font-semibold text-gray-400'>
+          {format(new Date(post.created * 1000))} &#183; u/
+          {post.author}
+        </p>
+        {post.post_hint === 'link' && (
+          <div className='block overflow-hidden truncate rounded bg-indigo-900/20 p-2 text-xs text-indigo-200 transition-colors duration-200 ease-in hover:bg-indigo-800/20 hover:text-indigo-100'>
+            <a
+              className='truncate'
+              href={post.url}
+              target='_blank'
+              rel='noreferrer'
+            >
+              {post.url}
+            </a>
+          </div>
+        )}
       </div>
 
-      <div className='relative h-[155px] w-full overflow-hidden rounded-xl'>
+      <div className='relative h-[155px] w-full flex-shrink-0 overflow-hidden rounded-xl text-sm'>
         {renderPlaceholder()}
       </div>
 
