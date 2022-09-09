@@ -5,12 +5,12 @@
 
 @layer base {
   html {
-    @apply scroll-smooth scrollbar-hide;
+    @apply overflow-x-hidden scroll-smooth scrollbar-hide;
     color-scheme: dark;
   }
 
-  body {
-    @apply flex min-h-screen flex-col overflow-x-hidden bg-dark-500 font-sans text-white selection:bg-indigo-400 selection:text-white;
+  #__next {
+    @apply flex min-h-screen flex-col bg-dark-500 font-sans text-white selection:bg-indigo-400 selection:text-white;
   }
 }
 

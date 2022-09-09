@@ -10,7 +10,6 @@ import redditIcon from '/public/images/reddit-icon.png';
 
 const Post = (post: RedditPost) => {
   const [hasLiked, setHasLiked] = useState(post.likes);
-  console.log('post', post);
 
   const vote = trpc.useMutation(['reddit.vote'], {
     onSuccess(newData, variables) {
@@ -119,10 +118,10 @@ const Post = (post: RedditPost) => {
   };
 
   return (
-    <div className='flex flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear hover:border-dark-200/60'>
+    <div className='flex flex-col justify-between space-y-1 rounded border border-dark-300 bg-dark-400 p-4 transition duration-100 ease-linear md:rounded-lg'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
         <div className='flex items-center space-x-3 truncate'>
-          <div className='relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-white'>
+          <div className='relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-white md:h-10 md:w-10'>
             <Image
               src={iconImage}
               alt={post.sr_detail?.title}
@@ -162,7 +161,7 @@ const Post = (post: RedditPost) => {
         )}
       </div>
 
-      <div className='relative h-[155px] w-full flex-shrink-0 overflow-hidden rounded-xl text-sm'>
+      <div className='relative h-[125px] w-full flex-shrink-0 overflow-hidden rounded-xl text-sm sm:h-[155px]'>
         {renderPlaceholder()}
       </div>
 
@@ -175,7 +174,6 @@ const Post = (post: RedditPost) => {
               hasLiked && '!text-orange-500'
             )}
           />
-
           <span className='text-xs font-semibold text-gray-400'>
             {nFormatter(post.ups, hasLiked)}
           </span>

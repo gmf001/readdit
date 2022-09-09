@@ -8,8 +8,14 @@ import Tags from '@/components/Tags';
 import type { SortBy } from '@/api/reddit/types';
 import { useAtom } from 'jotai';
 import { filterAtom } from '@/store';
+import { useWindowSize } from 'usehooks-ts';
 
 function Home() {
+  const { height } = useWindowSize();
+  const limit = height <= 900 ? 9 : 13;
+
+  console.log('limit', limit);
+
   const [query, setQuery] = useState<SortBy>('best');
   const [filter] = useAtom(filterAtom);
 
@@ -24,7 +30,7 @@ function Home() {
     refetch,
     isRefetching
   } = trpc.useInfiniteQuery(
-    ['reddit.posts', { sort: query, subreddit: filter.value }],
+    ['reddit.posts', { sort: query, subreddit: filter.value, limit }],
     {
       getNextPageParam: (lastPage) => lastPage?.nextCursor
     }
@@ -46,8 +52,8 @@ function Home() {
     parent.current && autoAnimate(parent.current);
   }, [parent]);
 
-  const skeletonPosts = (numPosts: number) => {
-    return Array(numPosts)
+  const skeletonPosts = () => {
+    return Array(limit)
       .fill(null)
       .map((_, id) => <PostSkeleton key={id} />);
   };
@@ -55,16 +61,16 @@ function Home() {
   return (
     <div ref={parent}>
       <Tags query={query} setQuery={setQuery} />
-      <div className='my-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+      <div className='my-4 grid grid-cols-1 gap-y-5 sm:my-8 sm:grid-cols-2 sm:gap-x-4 md:gap-y-10 md:gap-x-8 lg:grid-cols-3 xl:grid-cols-4'>
         {isLoading ? (
-          skeletonPosts(20)
+          skeletonPosts()
         ) : (
           <>
             {data?.pages.map((page) =>
               page?.posts.map((post, key) => <Post key={key} {...post} />)
             )}
-            {isFetchingNextPage && skeletonPosts(25)}
-            {isRefetching && skeletonPosts(25)}
+            {isFetchingNextPage && skeletonPosts()}
+            {isRefetching && skeletonPosts()}
             <span ref={ref}></span>
           </>
         )}

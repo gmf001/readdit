@@ -8,15 +8,15 @@ import type { AppProps } from 'next/app';
 import type { AppRouter } from '@/server/routers';
 import '@/styles/globals.css';
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={(pageProps as any)?.session}>
       <JotaiProvider>
         <Head>
           <title>Readdit - Reddit Client</title>
         </Head>
         <Navbar />
-        <main className='mx-auto px-4 md:max-w-screen-xl md:px-8 xl:max-w-screen-2xl'>
+        <main className='w-full px-4 sm:mx-auto md:max-w-screen-xl md:px-8 xl:max-w-screen-2xl'>
           <Component {...pageProps} />
         </main>
       </JotaiProvider>

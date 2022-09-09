@@ -29,7 +29,7 @@ export default function NavMenu() {
         <Menu>
           {({ open }) => (
             <>
-              <Menu.Button className='rounded-2 hover:border-th-border flex h-full w-full flex-none flex-row items-center justify-between rounded-md border border-dark-300 px-3.5 text-sm font-semibold outline-none hover:cursor-pointer hover:border-dark-200'>
+              <Menu.Button className='rounded-2 hover:border-th-border flex h-full w-full flex-none flex-row items-center justify-between rounded bg-indigo-600 px-4 text-sm font-semibold outline-none hover:cursor-pointer'>
                 {<span>{filter.title}</span>}
                 <ChevronDownIcon className='h-5 w-5' />
               </Menu.Button>
@@ -43,7 +43,7 @@ export default function NavMenu() {
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'
               >
-                <Menu.Items className='absolute right-0 z-50 mt-1 w-full origin-top-right space-y-2 divide-y divide-dark-200 rounded-md border border-dark-200 bg-dark-300 p-2 shadow-lg outline-none'>
+                <Menu.Items className='absolute right-0 z-50 mt-2 w-full origin-top-right space-y-2 divide-y divide-dark-200 rounded-sm border border-dark-200 bg-dark-300 p-2 shadow-lg outline-none'>
                   <div>
                     {options.map((option, i) => (
                       <Menu.Item key={i}>
