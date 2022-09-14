@@ -9,3 +9,4 @@
 
 - Infinite Scrolling
 - Dark Theme
+- PWA

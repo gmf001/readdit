@@ -1,10 +1,6 @@
-import {
-  AnnotationIcon,
-  ChevronDoubleUpIcon,
-  ExternalLinkIcon
-} from '@heroicons/react/solid';
+import { AnnotationIcon, ChevronDoubleUpIcon } from '@heroicons/react/solid';
 
-function PostSkeleton() {
+export const PostSkeleton = () => {
   return (
     <div className='flex h-[400px] flex-col justify-between space-y-1 rounded-lg border border-dark-300 bg-dark-400 p-4 hover:cursor-pointer hover:border-dark-200'>
       <div className='mb-4 flex flex-1 flex-col space-y-3'>
@@ -31,6 +27,6 @@ function PostSkeleton() {
       </div>
     </div>
   );
-}
+};
 
 export default PostSkeleton;

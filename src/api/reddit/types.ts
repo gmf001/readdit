@@ -28,6 +28,17 @@ const previewImage = z
   }))
   .nullish();
 
+const media = z
+  .record(
+    z
+      .object({
+        s: z.object({ u: z.string() }).transform(({ u }) => u)
+      })
+      .transform(({ s }) => s)
+  )
+  .transform((o) => Object.values(o))
+  .nullish();
+
 export const post = z.object({
   id: z.string(),
   name: z.string(),
@@ -44,6 +55,7 @@ export const post = z.object({
   is_twitter: z.boolean().nullish(),
   selftext: z.string().nullish(),
   num_comments: z.number(),
+  over_18: z.boolean(),
   ups: z.number(),
   created: z.number(),
   post_hint: z.string().nullish(),
@@ -52,28 +64,12 @@ export const post = z.object({
   secure_media: z
     .object({
       reddit_video: z
-        .object({
-          fallback_url: z.string()
-        })
+        .object({ fallback_url: z.string() })
         .nullish()
         .transform((v) => v?.fallback_url)
     })
     .nullish(),
-  gallery_data: z
-    .object({
-      items: z.array(
-        z
-          .object({
-            id: z.number(),
-            media_id: z.string()
-          })
-          .transform((i) => ({
-            ...i,
-            url: `https://i.redd.it/${i.media_id}.jpg`
-          }))
-      )
-    })
-    .nullish()
+  media_metadata: media
 });
 
 export const postValidator = z.object({

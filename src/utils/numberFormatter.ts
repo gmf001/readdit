@@ -1,9 +1,7 @@
-export default function nFormatter(num: number, hasLiked?: boolean | null) {
-  if (hasLiked) {
-    num = num + 1;
-  }
-
-  return Math.abs(num) > 999
-    ? Math.sign(num) * Number((Math.abs(num) / 1000).toFixed(1)) + 'k'
-    : Math.sign(num) * Math.abs(num);
+function nFormatter(num: number, liked?: boolean | null) {
+  if (liked) num = num + 1;
+  const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+  return formatter.format(num);
 }
+
+export default nFormatter;

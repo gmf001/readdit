@@ -3,7 +3,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Provider as JotaiProvider } from 'jotai';
 import superjson from 'superjson';
 import Head from 'next/head';
-import Navbar from '@/components/Navbar';
+import { Navbar } from '@/components';
 import type { AppProps } from 'next/app';
 import type { AppRouter } from '@/server/routers';
 import '@/styles/globals.css';

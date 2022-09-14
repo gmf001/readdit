@@ -1,20 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+import { trpc } from '@/api/trpc';
+import { useAtom } from 'jotai';
 import { useInView } from 'react-intersection-observer';
 import autoAnimate from '@formkit/auto-animate';
-import { trpc } from '@/api/trpc';
-import Post from '@/components/Post';
-import PostSkeleton from '@/components/PostSkeleton';
-import Tags from '@/components/Tags';
-import type { SortBy } from '@/api/reddit/types';
-import { useAtom } from 'jotai';
+import { PostSkeleton, Post, Tags } from '@/components';
 import { filterAtom } from '@/store';
 import { useWindowSize } from 'usehooks-ts';
+import type { SortBy } from '@/api/reddit';
 
 function Home() {
-  const { height } = useWindowSize();
-  const limit = height <= 900 ? 9 : 13;
-
-  console.log('limit', limit);
+  const { width } = useWindowSize();
+  const limit = width <= 900 ? 9 : 17;
 
   const [query, setQuery] = useState<SortBy>('best');
   const [filter] = useAtom(filterAtom);

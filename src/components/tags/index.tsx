@@ -5,7 +5,7 @@ type Props = {
   setQuery: (q: SortBy) => void;
 };
 
-function Tags({ query, setQuery }: Props) {
+export const Tags = ({ query, setQuery }: Props) => {
   return (
     <div className='hidden items-center space-x-5 divide-x divide-dark-400 py-4 sm:inline-flex md:py-8'>
       <div className='flex items-center space-x-4'>
@@ -44,6 +44,4 @@ function Tags({ query, setQuery }: Props) {
       </div>
     </div>
   );
-}
-
-export default Tags;
+};

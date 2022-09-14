@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { postValidator, subscriptionValidator } from './types';
+export * from './types';
 
 interface IPosts {
   sort: 'hot' | 'best' | 'new' | 'top';
@@ -39,6 +40,9 @@ export async function getPosts({
 
   console.log('url', url, params);
   const { data } = await axios.get(url, { headers, params });
+
+  // log one post
+  // console.log('post', data.data.children[0].data);
 
   return postValidator.parse(data).data;
 }
