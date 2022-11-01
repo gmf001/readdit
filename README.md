@@ -2,11 +2,6 @@
 
 ## Built with
 
-- Next, TS, tRPC
+- Next.js
+- Tailwind
 - Reddit API
-
-## Features
-
-- Infinite Scrolling
-- Dark Theme
-- PWA
