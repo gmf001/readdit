@@ -14,7 +14,7 @@ export const PostHeader = (post: RedditPost) => {
               post.sr_detail?.icon_img ||
               redditIcon
             }
-            alt={post.sr_detail?.title}
+            alt={post.sr_detail?.title || ''}
             layout='fill'
             objectFit='cover'
           />
