@@ -10,7 +10,7 @@
   }
 
   #__next {
-    @apply flex min-h-screen flex-col bg-dark-500 font-sans text-white selection:bg-indigo-400 selection:text-white;
+    @apply flex min-h-screen flex-col bg-dark font-sans text-white selection:bg-indigo-400 selection:text-white;
   }
 }
 

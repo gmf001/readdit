@@ -6,7 +6,7 @@ interface Props {
 export const VideoPost = ({ src, autoplay }: Props) => {
   return (
     <video
-      className='h-full w-full bg-dark-600'
+      className='h-full w-full bg-dark-accent-2'
       autoPlay={autoplay}
       muted={true}
       loop={true}
